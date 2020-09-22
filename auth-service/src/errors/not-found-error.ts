@@ -3,7 +3,7 @@ import { CustomError } from "./custom-error";
 export class NotFoundError extends CustomError {
   statusCode = 404;
 
-  constructor(public field: string) {
+  constructor(public subject: string) {
     super("Resource not found.");
 
     // oh my.
@@ -11,6 +11,6 @@ export class NotFoundError extends CustomError {
   }
 
   serializeErrors() {
-    return [{ message: "Invalid resource requested.", subject: this.field }];
+    return { errors: [{ subject: this.subject, message: "Resource not found." }] };
   }
 }

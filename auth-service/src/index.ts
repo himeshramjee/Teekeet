@@ -44,6 +44,7 @@ const start = async () => {
       });
     })
     .catch((e) => {
+      // FIXME: Figure out why I'm still getting the UnhandledPromiseException
       console.log("Auth Mongo DB connection failed with Error: " + e.message);
       throw new DatabaseConnectionError(
         authMongoDBEndpoint,
