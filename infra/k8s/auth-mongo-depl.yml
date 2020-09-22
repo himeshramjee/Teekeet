@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth-service
+  name: auth-mongo-db
 spec:
   selector:
     matchLabels:
-      app: auth-service
+      app: auth-mongo-db
   template:
     metadata:
       labels:
-        app: auth-service
+        app: auth-mongo-db
     spec:
       containers:
-        - name: auth-service
-          image: chaiwala/auth-service
+        - name: auth-mongo-db
+          image: mongo
           resources:
             requests:
               memory: "512Mi"
@@ -22,18 +22,18 @@ spec:
               memory: "2048Mi"
               cpu: "250m"
           ports:
-            - containerPort: 7000
+            - containerPort: 27017
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: auth-clusterip-srv
+  name: auth-mongo-db-clusterip-srv
 spec:
   type: ClusterIP
   selector:
-    app: auth-service
+    app: auth-mongo-db
   ports:
-    - name: auth-service
+    - name: auth-mongo-db
       protocol: TCP
-      port: 7000
-      targetPort: 7000
+      port: 27017
+      targetPort: 27017
