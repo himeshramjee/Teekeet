@@ -40,7 +40,7 @@ const start = async () => {
       );
 
       app.listen(7000, () => {
-        console.log("Auth-wala v0.00 listening on port 7000...");
+        console.log("Auth-wala v0.0.0 listening on port 7000...");
       });
     })
     .catch((e) => {

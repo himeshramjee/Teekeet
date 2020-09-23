@@ -17,19 +17,21 @@ router.post(
       .withMessage("Password must be between 8 and 20 characters long."),
   ],
   async (req: Request, res: Response) => {
+    // Check for input validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       throw new RequestValidationError(errors.array());
     }
 
+    // Check if email is already registered
     const { email, password } = req.body;
-
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       console.log("Email is not available.");
       throw new BadRequestError("Email Address", "Email is not available.");
     }
 
+    // Add new user to database
     const user = User.build({ email, password });
     await user.save();
 

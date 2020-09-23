@@ -16,10 +16,14 @@ export const errorHandler = (
     return res.status(err.statusCode).send(err.serializeErrors());
   }
 
+  let msg = `Yoh! Unhandled exception. Error message: ${err.message}.`;
+  console.log(msg);
+  console.log(err.stack);
+
   return res.status(500).send({
     errors: [
       {
-        message: `\tYoh! Unhandled exception. Error message: ${err.message}.`,
+        message: msg,
       },
     ],
   });
