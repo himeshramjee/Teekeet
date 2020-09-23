@@ -1,6 +1,7 @@
 import express from "express";
 import "express-async-errors";
 import mongoose from "mongoose";
+import cookieSession from "cookie-session";
 
 import { signUpRouter } from "./routes/sign-up";
 import { signInRouter } from "./routes/sign-in";
@@ -11,7 +12,17 @@ import { NotFoundError } from "./errors/not-found-error";
 import { DatabaseConnectionError } from "./errors/database-connection-error";
 
 const app = express();
+
+app.set("trust proxy", true); // Express is behind a proxy and should trust ssl traffic from ingress nginx
 app.use(express.json());
+app.use(
+  cookieSession({
+    name: "teekeet.com session",
+    signed: false, // Disable cookie encryption to better support different service platforms (java, ruby, nodejs etc)
+    secure: true, // Cookies should only be used over HTTPs
+    maxAge: 1 * 10 * 60 * 1000, // 10mins
+  })
+);
 
 app.use(signInRouter);
 app.use(signOutRouter);
@@ -25,6 +36,10 @@ app.all("*", (req, res) => {
 app.use(errorHandler);
 
 const start = async () => {
+  if (!process.env.JWT_KEY) {
+    throw new Error("JWT_KEY is not defined.");
+  }
+
   const authMongoDBEndpoint =
     "mongodb://auth-mongo-db-clusterip-srv:27017/auth";
 

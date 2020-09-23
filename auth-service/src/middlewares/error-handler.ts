@@ -7,8 +7,6 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log("Something went wrong. Oh my hat!!!");
-
   if (err instanceof CustomError) {
     const errorItems = JSON.stringify(err.serializeErrors());
     console.log(`\t${req.path}: Error - ${errorItems}`);
@@ -16,6 +14,7 @@ export const errorHandler = (
     return res.status(err.statusCode).send(err.serializeErrors());
   }
 
+  console.log("Something went wrong. Oh my hat!!!");
   let msg = `Yoh! Unhandled exception. Error message: ${err.message}.`;
   console.log(msg);
   console.log(err.stack);

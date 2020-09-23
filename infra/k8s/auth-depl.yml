@@ -23,6 +23,12 @@ spec:
               cpu: "250m"
           ports:
             - containerPort: 7000
+          env:
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: teekeet-jwt-secret
+                  key: JWT_KEY
 ---
 apiVersion: v1
 kind: Service
