@@ -18,16 +18,29 @@ interface UserModel extends mongoose.Model<UserDoc> {
   build(attrs: UserAttrs): UserDoc;
 }
 
-const userSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
+const userSchema = new mongoose.Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
   },
-  password: {
-    type: String,
-    required: true,
-  },
-});
+  {
+    toJSON: {
+      // TODO: Yep this mixes view concerns with model so not good from an MVC pattern perspective
+      transform(doc, ret) {
+        delete ret.password;
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.__v; // or VersionKey = false;
+      },
+    },
+  }
+);
 
 // Note the use of `function` here is important as using `=>` arrow syntax results in a different/incorrect context for `this`.
 userSchema.pre("save", async function () {
