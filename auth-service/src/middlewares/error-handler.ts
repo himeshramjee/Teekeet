@@ -9,15 +9,19 @@ export const errorHandler = (
 ) => {
   if (err instanceof CustomError) {
     const errorItems = JSON.stringify(err.serializeErrors());
-    console.log(`\t${req.path}: Error - ${errorItems}`);
+    if (process.env.NODE_ENV !== "test") {
+      console.log(`\t${req.path}: Error - ${errorItems}`);
+    }
 
     return res.status(err.statusCode).send(err.serializeErrors());
   }
 
-  console.log("Something went wrong. Oh my hat!!!");
   let msg = `Yoh! Unhandled exception. Error message: ${err.message}.`;
-  console.log(msg);
-  console.log(err.stack);
+  if (process.env.NODE_ENV !== "test") {
+    // TODO: Find 'if debuglog'
+    console.log(msg);
+    console.log(err.stack);
+  }
 
   return res.status(500).send({
     errors: [
