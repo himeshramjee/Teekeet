@@ -10,11 +10,19 @@ build:
   local:
     push: false
   artifacts:
-    - image: chaiwala/auth-service
+    - image: himeshramjee/auth-service
       context: auth-service
       docker:
         dockerfile: Dockerfile
       sync:
         manual:
           - src: "src/**/*.ts"
+            dest: .
+    - image: himeshramjee/teekeet-client-web-app
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "pages/**/*.js"
             dest: .

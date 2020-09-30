@@ -14,3 +14,7 @@ spec:
             backend:
               serviceName: auth-clusterip-srv
               servicePort: 7000
+          - path: /?(.*)
+            backend:
+              serviceName: client-webapp-clusterip-srv
+              servicePort: 3000

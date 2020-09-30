@@ -31,6 +31,7 @@ export const setCurrentUser = (
     req.currentUser = verifiedUser;
   } catch (e) {
     // User isn't verified/auth'd
+    console.log("setCurrentUser: User not authenticated.");
   }
 
   next();

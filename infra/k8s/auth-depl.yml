@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: auth-service
-          image: chaiwala/auth-service
+          image: himeshramjee/auth-service
           resources:
             requests:
               memory: "512Mi"
