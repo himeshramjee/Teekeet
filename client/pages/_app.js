@@ -1,6 +1,8 @@
 import "bootstrap/dist/css/bootstrap.css";
 
 import BuildAxiosClient from "../api/build-client";
+import HeaderComponent from "../components/header";
+import FooterComponent from "../components/footer";
 
 // https://nextjs.org/docs/advanced-features/custom-app
 const AppComponent = ({ Component, pageProps, userIsAuthenticated }) => {
@@ -8,8 +10,9 @@ const AppComponent = ({ Component, pageProps, userIsAuthenticated }) => {
 
   return (
     <div>
-      <h1>Header</h1>
+      <HeaderComponent userIsAuthenticated={userIsAuthenticated} />
       <Component {...pageProps} />
+      <FooterComponent />
     </div>
   );
 };

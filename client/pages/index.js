@@ -11,19 +11,6 @@ const TeekeetLandingPage = (props) => {
           {userID && email ? "Your email is " + email : "Please sign up/in"}.
         </i>
       </p>
-      <ul>
-        <li>
-          <a href="/auth/sign-up">Sign up</a>
-        </li>
-        <li>
-          <a href="/auth/sign-in">Sign in</a>
-        </li>
-        {email && (
-          <li>
-            <a href="/auth/sign-out">Sign out</a>
-          </li>
-        )}
-      </ul>
     </div>
   );
 };
