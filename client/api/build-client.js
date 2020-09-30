@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// FIXME: This should no longer be needed given I'm using the new `getServerSideProps` method.
+// FIXME: This may no longer be needed given I'm using the new `getServerSideProps` method.
 // Leaving it in place for now as I'm not sure if it may be needed further into the online course I'm doing.
 const BuildAxiosClient = ({ req }) => {
   if (typeof window === "undefined") {

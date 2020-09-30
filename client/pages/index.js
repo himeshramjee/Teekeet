@@ -31,18 +31,14 @@ const TeekeetLandingPage = (props) => {
 // export const getServerSideProps = async (context) => {
 // TeekeetLandingPage.getInitialProps = async (context) => {
 export async function getServerSideProps(context) {
-  const nonce = Math.floor(Math.random() * Math.floor(100));
-
   const { data } = await BuildAxiosClient(context)
     .get("/api/users/current-user")
     .catch((e) => {
-      console.log(
-        `(${nonce}) Failed to get initial props. Error: ${e.message}`
-      );
+      console.log(`Failed to get initial props. Error: ${e.message}`);
     });
 
   if (data && data.currentUser) {
-    // console.log(`(${nonce}) Data for initial props: ${data.currentUser.email}`);
+    // console.log(`Data for initial props: ${data.currentUser.email}`);
     return {
       props: {
         email: data.currentUser.email,
@@ -50,7 +46,7 @@ export async function getServerSideProps(context) {
       },
     };
   } else {
-    // console.log(`(${nonce}) User has no authenticated session.`);
+    // console.log(`User has no authenticated session.`);
     return { props: { email: null, userID: null } };
   }
 }
