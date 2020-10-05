@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teekeet-service
+spec:
+  selector:
+    matchLabels:
+      app: teekeet-service
+  template:
+    metadata:
+      labels:
+        app: teekeet-service
+    spec:
+      containers:
+        - name: teekeet-service
+          image: himeshramjee/teekeet-service
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "1m"
+            limits:
+              memory: "512Mi"
+              cpu: "250m"
+          ports:
+            - containerPort: 7001
+          env:
+            - name: MONGO_URI
+              value: "mongodb://teekeet-service-mongo-db-clusterip-srv:27017/tickets"
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: teekeet-jwt-secret
+                  key: JWT_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: teekeet-service-clusterip-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: teekeet-service
+  ports:
+    - name: teekeet-service
+      protocol: TCP
+      port: 7001
+      targetPort: 7001

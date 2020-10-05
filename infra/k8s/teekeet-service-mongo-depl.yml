@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teekeet-service-mongo-db
+spec:
+  selector:
+    matchLabels:
+      app: teekeet-service-mongo-db
+  template:
+    metadata:
+      labels:
+        app: teekeet-service-mongo-db
+    spec:
+      containers:
+        - name: teekeet-service-mongo-db
+          image: mongo
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "1m"
+            limits:
+              memory: "512Mi"
+              cpu: "250m"
+          ports:
+            - containerPort: 27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: teekeet-service-mongo-db-clusterip-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: teekeet-service-mongo-db
+  ports:
+    - name: teekeet-service-mongo-db
+      protocol: TCP
+      port: 27017
+      targetPort: 27017

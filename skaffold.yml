@@ -26,3 +26,11 @@ build:
         manual:
           - src: "pages/**/*.js"
             dest: .
+    - image: himeshramjee/teekeet-service
+      context: teekeet-service
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
