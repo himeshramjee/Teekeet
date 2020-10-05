@@ -16,14 +16,16 @@ spec:
           image: himeshramjee/auth-service
           resources:
             requests:
-              memory: "512Mi"
+              memory: "256Mi"
               cpu: "1m"
             limits:
-              memory: "2048Mi"
+              memory: "512Mi"
               cpu: "250m"
           ports:
             - containerPort: 7000
           env:
+            - name: MONGO_URI
+              value: "mongodb://auth-service-mongo-db-clusterip-srv:27017/auth"
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
@@ -33,13 +35,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: auth-clusterip-srv
+  name: auth-service-clusterip-srv
 spec:
   type: ClusterIP
   selector:
-    app: auth-service
+    app: auth-service-service
   ports:
-    - name: auth-service
+    - name: auth-service-service
       protocol: TCP
       port: 7000
       targetPort: 7000

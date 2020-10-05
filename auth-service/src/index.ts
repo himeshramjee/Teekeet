@@ -4,12 +4,11 @@ import { DatabaseConnectionError } from "@chaiwala/common";
 import { app } from "./app";
 
 const start = async () => {
-  if (!process.env.JWT_KEY) {
-    throw new Error("JWT_KEY is not defined.");
+  if (!process.env.JWT_KEY || !process.env.MONGO_URI) {
+    throw new Error("Missing environment variables.");
   }
 
-  const authMongoDBEndpoint =
-    "mongodb://auth-mongo-db-clusterip-srv:27017/auth";
+  const authMongoDBEndpoint = process.env.MONGO_URI;
 
   await mongoose
     .connect(authMongoDBEndpoint, {
