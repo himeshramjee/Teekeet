@@ -12,8 +12,12 @@ spec:
         paths:
           - path: /api/users/?(.*)
             backend:
-              serviceName: auth-clusterip-srv
+              serviceName: auth-service-clusterip-srv
               servicePort: 7000
+          - path: /api/tickets/?(.*)
+            backend:
+              serviceName: teekeet-service-clusterip-srv
+              servicePort: 7001
           - path: /?(.*)
             backend:
               serviceName: client-webapp-clusterip-srv

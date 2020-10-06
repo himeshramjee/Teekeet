@@ -6,7 +6,7 @@ import { app } from "../app";
 declare global {
   namespace NodeJS {
     interface Global {
-      getSignUpAuthNCookie(): Promise<string[]>;
+      signInTestUser(): Promise<string[]>;
     }
   }
 }
@@ -38,7 +38,7 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-global.getSignUpAuthNCookie = async () => {
+global.signInTestUser = async () => {
   const email = "test@test.com";
   const password = "P@ssw0rd5";
 

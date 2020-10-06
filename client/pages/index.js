@@ -18,10 +18,27 @@ const TeekeetLandingPage = (props) => {
 // export const getServerSideProps = async (context) => {
 // TeekeetLandingPage.getInitialProps = async (context) => {
 export async function getServerSideProps(context) {
-  const { data } = await BuildAxiosClient(context)
+  if (!process.env.INGRESS_URI) {
+    throw new Error(
+      "Application failed to initialize. INGRESS_URI environment variable is missing."
+    );
+  }
+
+  let data;
+
+  await BuildAxiosClient(context)
     .get("/api/users/current-user")
+    .then((response) => {
+      data = response.data;
+    })
     .catch((e) => {
-      console.log(`Failed to get initial props. Error: ${e.message}`);
+      console.log(
+        `Failed to get initial server side props. Error: ${
+          e.message
+        }. Http status code: ${
+          e.response ? e.response.status : "not available"
+        }`
+      );
     });
 
   if (data && data.currentUser) {

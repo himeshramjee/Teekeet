@@ -21,10 +21,19 @@ const AppComponent = ({ Component, pageProps, userIsAuthenticated }) => {
 // export async function getServerSideProps(appContext) {
 AppComponent.getInitialProps = async (appContext) => {
   // Load up any global state that'll be needed to hydrate all pages
-  const { data } = await BuildAxiosClient(appContext.ctx)
+  let data;
+
+  await BuildAxiosClient(appContext.ctx)
     .get("/api/users/current-user")
+    .then((response) => {
+      data = response.data;
+    })
     .catch((e) => {
-      console.log(`Failed to get initial props. Error: ${e.message}`);
+      console.log(
+        `Failed to get initial props. Error: ${e.message}. Http status code: ${
+          e.response ? e.response.status : "not available"
+        }`
+      );
     });
 
   // Trigger page specific props functions

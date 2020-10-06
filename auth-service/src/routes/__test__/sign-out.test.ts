@@ -2,7 +2,7 @@ import request from "supertest";
 import { app } from "../../app";
 
 it("returns a 200 with no JWT cookies after sign out", async () => {
-  await global.getSignUpAuthNCookie();
+  await global.signInTestUser();
 
   await request(app).get("/api/users/current-user").expect(200);
 

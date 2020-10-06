@@ -2,8 +2,6 @@ import request from "supertest";
 import { app } from "../../app";
 
 it("returns a 200 on successful sign in", async () => {
-  await global.getSignUpAuthNCookie();
-
   await request(app)
     .post("/api/users/sign-in")
     .send({
@@ -33,7 +31,6 @@ it("returns a 400 with an invalid email address", async () => {
     .expect(400);
 });
 
-
 it("returns a 400 with an invalid password", async () => {
   await request(app)
     .post("/api/users/sign-in")
@@ -55,8 +52,6 @@ it("returns a 400 with a missing email address and password", async () => {
 });
 
 it("sets JWT cookie on successful sign in", async () => {
-  await global.getSignUpAuthNCookie();
-
   const response = await request(app)
     .post("/api/users/sign-in")
     .send({

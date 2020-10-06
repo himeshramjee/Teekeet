@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: teekeet-service
+  name: teekeet-service-depl
 spec:
   selector:
     matchLabels:
@@ -16,10 +16,10 @@ spec:
           image: himeshramjee/teekeet-service
           resources:
             requests:
-              memory: "256Mi"
+              memory: "100Mi"
               cpu: "1m"
             limits:
-              memory: "512Mi"
+              memory: "256Mi"
               cpu: "250m"
           ports:
             - containerPort: 7001

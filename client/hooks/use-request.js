@@ -13,7 +13,7 @@ const useRequestHook = ({ pageID, url, method, body, onSuccess }) => {
         }
       })
       .catch((e) => {
-        if (e.response) {
+        if (e.response && e.response.data && e.response.data.errors) {
           setErrors(
             <div className="alert alert-danger">
               <ul className={pageID + "-errors-list"}>
@@ -24,7 +24,13 @@ const useRequestHook = ({ pageID, url, method, body, onSuccess }) => {
             </div>
           );
         } else {
-          console.log("Failed to complete useRequest. Error: " + e.message);
+          console.log(
+            `Failed to complete useRequest. Error: ${
+              e.message
+            }. Http status code: ${
+              e.response ? e.response.status : "not available"
+            }`
+          );
         }
       });
   };

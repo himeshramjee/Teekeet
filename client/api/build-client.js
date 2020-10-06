@@ -8,8 +8,7 @@ const BuildAxiosClient = ({ req }) => {
     // This executes within a container and since we're making a cross service call to a service in a different namespace we need to use an explicit FQDN.
     // console.log("Returning axios with server context/url.");
     return axios.create({
-      baseURL:
-        "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local",
+      baseURL: process.env.INGRESS_URI,
       headers: req.headers,
     });
   } else {

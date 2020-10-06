@@ -2,7 +2,7 @@ import request from "supertest";
 import { app } from "../../app";
 
 it("returns a 200 on get current user", async () => {
-  const cookie = await global.getSignUpAuthNCookie();
+  const cookie = await global.signInTestUser();
 
   const response = await request(app)
     .get("/api/users/current-user")

@@ -17,11 +17,14 @@ spec:
           image: himeshramjee/teekeet-client-web-app:latest
           resources:
             requests:
-              memory: "256Mi"
+              memory: "100Mi"
               cpu: "1m"
             limits:
-              memory: "512Mi"
+              memory: "256Mi"
               cpu: "250m"
+          env:
+            - name: INGRESS_URI
+              value: "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local"
 ---
 apiVersion: v1
 kind: Service
