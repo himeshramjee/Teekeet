@@ -2,8 +2,9 @@ import express from "express";
 import "express-async-errors";
 import cookieSession from "cookie-session";
 
-import { errorHandler } from "@chaiwala/common";
-import { NotFoundError } from "@chaiwala/common";
+import { errorHandler, NotFoundError, setCurrentUser } from "@chaiwala/common";
+
+import { ticketsRouter } from "../routes/api/tickets";
 
 const app = express();
 
@@ -17,6 +18,10 @@ app.use(
     maxAge: 1 * 10 * 60 * 1000, // 10mins
   })
 );
+
+app.use(setCurrentUser);
+
+app.use(ticketsRouter);
 
 app.all("*", (req, res) => {
   throw new NotFoundError(`${req.method}: ${req.path}`);
