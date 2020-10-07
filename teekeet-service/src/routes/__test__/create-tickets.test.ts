@@ -2,6 +2,8 @@ import request from "supertest";
 import { app } from "../../app";
 import { Ticket } from "../../models/ticket";
 
+import { createDummyTicket } from "./test-base";
+
 it("Has a route handler listening to /api/tickets for post requests", async () => {
   await request(app)
     .post("/api/tickets/create")
@@ -97,14 +99,7 @@ it("Creates a ticket with valid inputs", async () => {
   let tickets = await Ticket.find({});
   expect(tickets.length).toEqual(0);
 
-  await request(app)
-    .post("/api/tickets/create")
-    .set("Cookie", global.signInTestUser())
-    .send({
-      title: "Happy pup",
-      price: "R1,010.10",
-    })
-    .expect(201);
+  await createDummyTicket("Happy pup", "R1,010.10").expect(201);
 
   // Check the count of all tickets now - should be one
   tickets = await Ticket.find({});
@@ -112,22 +107,6 @@ it("Creates a ticket with valid inputs", async () => {
 });
 
 it("Rejects creation of duplicate ticket", async () => {
-  await request(app)
-    .post("/api/tickets/create")
-    .set("Cookie", global.signInTestUser())
-    .send({
-      title: "Happy pup",
-      price: "R1,010.10",
-    })
-    .expect(201);
-
-  console.log("Creating dup...");
-  await request(app)
-    .post("/api/tickets/create")
-    .set("Cookie", global.signInTestUser())
-    .send({
-      title: "Happy pup",
-      price: "R1,010.10",
-    })
-    .expect(400);
+  await createDummyTicket(/* Use method defaults */).expect(201);
+  await createDummyTicket(/* Use method defaults */).expect(400);
 });

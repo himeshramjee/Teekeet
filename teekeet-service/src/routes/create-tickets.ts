@@ -6,11 +6,14 @@ import {
   validateRequest,
   BadRequestError,
 } from "@chaiwala/common";
+import {
+  defaultCurrencySymbol,
+  removeCurrencyFormatting,
+} from "../utils/currency-utils";
 
-import { Ticket } from "../../src/models/ticket";
+import { Ticket } from "../models/ticket";
 
 const router = express.Router();
-const currencySymbol = "R";
 
 router.post(
   "/api/tickets/create",
@@ -22,7 +25,7 @@ router.post(
     body("price")
       .isCurrency({
         allow_negatives: false,
-        symbol: currencySymbol,
+        symbol: defaultCurrencySymbol,
         require_symbol: true,
       })
       .withMessage("Invalid currency or value"),
@@ -33,7 +36,7 @@ router.post(
     const userID = req.currentUser!.id;
 
     // Strip the currency formatting as we're storing the price as a Number
-    price = price.replace(currencySymbol, "").replace(",", "");
+    price = removeCurrencyFormatting(price);
 
     // Check if the ticket has already been created by current user
     let duplicateTicket = await Ticket.findOne({ title, price, userID });
@@ -44,8 +47,6 @@ router.post(
         `User (${userID}) has already created a ticket with title "${title} and price ${price}".`
       );
     } else {
-      console.log("Ticket creation validated, adding to database now...");
-
       // Add new ticket to database
       const newTicket = Ticket.build({ title, price, userID });
       await newTicket.save();

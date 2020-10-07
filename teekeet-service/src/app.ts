@@ -4,7 +4,9 @@ import cookieSession from "cookie-session";
 
 import { errorHandler, NotFoundError, setCurrentUser } from "@chaiwala/common";
 
-import { createTicketRouter } from "../routes/api/create-ticket";
+import { createTicketRouter } from "./routes/create-tickets";
+import { viewTicketRouter } from "./routes/view-tickets";
+import { updateTicketsRouter } from "./routes/update-tickets";
 
 const app = express();
 
@@ -22,6 +24,8 @@ app.use(
 app.use(setCurrentUser);
 
 app.use(createTicketRouter);
+app.use(updateTicketsRouter);
+app.use(viewTicketRouter);
 
 app.all("*", (req, res) => {
   throw new NotFoundError(`${req.method}: ${req.path}`);

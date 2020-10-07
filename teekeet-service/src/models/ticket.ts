@@ -62,3 +62,4 @@ ticketSchema.statics.build = (attrs: RequiredTicketAttrs) => {
 const Ticket = mongoose.model<TicketDoc, TicketModel>("Ticket", ticketSchema);
 
 export { Ticket };
+export { TicketDoc };
