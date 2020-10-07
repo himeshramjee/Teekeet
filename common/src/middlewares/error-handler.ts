@@ -17,11 +17,8 @@ export const errorHandler = (
   }
 
   let msg = `Yoh! Unhandled exception. Error message: ${err.message}.`;
-  if (process.env.NODE_ENV !== "test") {
-    // TODO: Find 'if debuglog'
-    console.log(msg);
-    console.log(err.stack);
-  }
+  console.error(msg);
+  console.debug(err.stack);
 
   return res.status(500).send({
     errors: [
