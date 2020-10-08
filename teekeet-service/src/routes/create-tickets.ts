@@ -16,19 +16,23 @@ import { Ticket } from "../models/ticket";
 const router = express.Router();
 
 router.post(
-  "/api/tickets/create",
+  "/api/tickets/",
   checkUserIsAuthorized,
   [
-    body("title").trim().isLength({ min: 2 }).withMessage("Title is required"),
-    body("title").not().contains("!@#$%").withMessage("Invalid Title"),
-    body("price").trim().notEmpty().withMessage("Price is required"),
+    body("title")
+      .trim()
+      .isLength({ min: 2 })
+      .withMessage("Title is required (minimum 2 characters)"),
+    body("title").not().contains("!@#$%").withMessage("Invalid Title"), // demonstration only
     body("price")
       .isCurrency({
         allow_negatives: false,
         symbol: defaultCurrencySymbol,
         require_symbol: true,
       })
-      .withMessage("Invalid currency or value"),
+      .withMessage(
+        `Invalid currency or value (expected format: ${defaultCurrencySymbol}1,010.10)`
+      ),
   ],
   validateRequest,
   async (req: Request, res: Response) => {

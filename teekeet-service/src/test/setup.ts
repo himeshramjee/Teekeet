@@ -1,7 +1,5 @@
-import request from "supertest";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
-import { app } from "../app";
 import jwt from "jsonwebtoken";
 
 declare global {
@@ -15,8 +13,6 @@ declare global {
 let mongo: MongoMemoryServer;
 
 beforeAll(async () => {
-  process.env.JWT_KEY = "test-jwt-key";
-
   mongo = new MongoMemoryServer();
   const mongoUri = await mongo.getUri();
 

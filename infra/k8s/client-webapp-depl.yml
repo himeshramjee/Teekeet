@@ -25,6 +25,8 @@ spec:
           env:
             - name: INGRESS_URI
               value: "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local"
+            - name: NEXT_TELEMETRY_DISABLED
+              value: "1"
 ---
 apiVersion: v1
 kind: Service

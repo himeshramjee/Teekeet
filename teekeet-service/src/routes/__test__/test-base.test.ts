@@ -11,7 +11,7 @@ const createDummyTicket = (
   userID?: string
 ) => {
   const response = request(app)
-    .post("/api/tickets/create")
+    .post("/api/tickets/")
     .set("Cookie", global.signInTestUser(userID))
     .send({
       title: title,

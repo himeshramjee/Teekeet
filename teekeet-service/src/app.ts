@@ -1,3 +1,6 @@
+// FIXME: Old but has a good list. Obviously look current OWASP/standards
+// https://itnext.io/make-security-on-your-nodejs-api-the-priority-50da8dc71d68
+
 import express from "express";
 import "express-async-errors";
 import cookieSession from "cookie-session";
@@ -11,7 +14,7 @@ import { updateTicketsRouter } from "./routes/update-tickets";
 const app = express();
 
 app.set("trust proxy", true); // Express is behind a proxy and should trust ssl traffic from ingress nginx
-app.use(express.json());
+app.use(express.json({ limit: process.env.MAX_SIZE_JSON_REQUEST }));
 app.use(
   cookieSession({
     name: "teekeet.com session",

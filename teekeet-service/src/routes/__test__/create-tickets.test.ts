@@ -6,7 +6,7 @@ import { createDummyTicket } from "./test-base.test";
 
 it("Has a route handler listening to /api/tickets for post requests", async () => {
   await request(app)
-    .post("/api/tickets/create")
+    .post("/api/tickets/")
     .send({})
     .then((response) => {
       expect(response.status).not.toEqual(404);
@@ -15,7 +15,7 @@ it("Has a route handler listening to /api/tickets for post requests", async () =
 
 it("Rejects unauthenticated users", async () => {
   await request(app)
-    .post("/api/tickets/create")
+    .post("/api/tickets/")
     .then((response) => {
       expect(response.status).toEqual(401);
     });
@@ -23,7 +23,7 @@ it("Rejects unauthenticated users", async () => {
 
 it("Does not return 401 for authenticated users", async () => {
   await request(app)
-    .post("/api/tickets/create")
+    .post("/api/tickets/")
     .set("Cookie", global.signInTestUser())
     .then((response) => {
       expect(response.status).not.toEqual(401);
@@ -32,7 +32,7 @@ it("Does not return 401 for authenticated users", async () => {
 
 it("Returns an error for invalid title character length", async () => {
   await request(app)
-    .post("/api/tickets/create")
+    .post("/api/tickets/")
     .set("Cookie", global.signInTestUser())
     .send({
       title: "a",
@@ -43,7 +43,7 @@ it("Returns an error for invalid title character length", async () => {
 
 it("Returns an error for missing title", async () => {
   await request(app)
-    .post("/api/tickets/create")
+    .post("/api/tickets/")
     .set("Cookie", global.signInTestUser())
     .send({
       price: 10.0,
@@ -53,7 +53,7 @@ it("Returns an error for missing title", async () => {
 
 it("Returns an error for invalid title characters", async () => {
   await request(app)
-    .post("/api/tickets/create")
+    .post("/api/tickets/")
     .set("Cookie", global.signInTestUser())
     .send({
       title: "aaa!@#$%fff",
@@ -64,7 +64,7 @@ it("Returns an error for invalid title characters", async () => {
 
 it("Returns an error for missing price", async () => {
   await request(app)
-    .post("/api/tickets/create")
+    .post("/api/tickets/")
     .set("Cookie", global.signInTestUser())
     .send({
       title: "Happy pup",
@@ -74,7 +74,7 @@ it("Returns an error for missing price", async () => {
 
 it("Returns an error for negative price value", async () => {
   await request(app)
-    .post("/api/tickets/create")
+    .post("/api/tickets/")
     .set("Cookie", global.signInTestUser())
     .send({
       title: "Happy pup",
@@ -85,7 +85,7 @@ it("Returns an error for negative price value", async () => {
 
 it("Returns an error for incorrect price symbol", async () => {
   await request(app)
-    .post("/api/tickets/create")
+    .post("/api/tickets/")
     .set("Cookie", global.signInTestUser())
     .send({
       title: "Happy pup",

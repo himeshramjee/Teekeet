@@ -31,6 +31,8 @@ spec:
                 secretKeyRef:
                   name: teekeet-jwt-secret
                   key: JWT_KEY
+            - name: MAX_SIZE_JSON_REQUEST
+              value: "10KB"
 ---
 apiVersion: v1
 kind: Service

@@ -41,7 +41,7 @@ it("Returns a status 400 for an malformed ticket id", async () => {
   await request(app).get(`/api/tickets/${ticketID}`).expect(400);
 });
 
-it("Has route to handle unauthenticated requestes to /api/tickets/list and return status 200", async () => {
+it("Has route to handle unauthenticated requestes to /api/tickets/ and return status 200", async () => {
   const ticketsData = [
     { title: "Happy pup", price: "R1,010.10" },
     { title: "Happier pupper", price: "R1,010.20" },
@@ -60,7 +60,7 @@ it("Has route to handle unauthenticated requestes to /api/tickets/list and retur
   expect(newTickets.length).toBeGreaterThan(0);
 
   const ticketListResponse = await request(app)
-    .get(`/api/tickets/list`)
+    .get(`/api/tickets/`)
     .expect(200);
 
   expect(ticketListResponse.body.length).toEqual(3);

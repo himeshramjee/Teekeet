@@ -8,7 +8,7 @@ import { Ticket } from "../models/ticket";
 
 const router = express.Router();
 
-router.get("/api/tickets/list", async (req: Request, res: Response) => {
+router.get("/api/tickets/", async (req: Request, res: Response) => {
   const tickets = await Ticket.find({});
 
   res.status(200).send(tickets);

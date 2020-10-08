@@ -4,10 +4,17 @@ import { DatabaseConnectionError } from "@chaiwala/common";
 import { app } from "./app";
 
 const start = async () => {
-  if (!process.env.JWT_KEY || !process.env.MONGO_URI) {
+  if (
+    !process.env.JWT_KEY ||
+    !process.env.MONGO_URI ||
+    !process.env.MAX_SIZE_JSON_REQUEST
+  ) {
     throw new Error("Missing environment variables.");
+  } else {
+    console.info(
+      `Using environment variables: JWT_KEY=<redacted>, MONGO_URI=${process.env.MONGO_URI}, MAX_SIZE_JSON_REQUEST=${process.env.MAX_SIZE_JSON_REQUEST}`
+    );
   }
-
   const teekeetMongoDBEndpoint = process.env.MONGO_URI;
 
   await mongoose

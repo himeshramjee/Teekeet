@@ -30,6 +30,9 @@ router.put(
         symbol: defaultCurrencySymbol,
         require_symbol: true,
       })
+      .withMessage(
+        `Invalid currency or value (expected format: ${defaultCurrencySymbol}1,010.10)`
+      )
       .bail(),
   ],
   validateRequest,
