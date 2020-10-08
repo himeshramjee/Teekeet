@@ -1,9 +1,46 @@
 import request from "supertest";
 import { app } from "../../app";
-import { createDummyTicket } from "./test-base";
+import { createDummyTicket } from "./test-base.test";
 import { removeCurrencyFormatting } from "../../utils/currency-utils";
 
-it("Accepts requests on /api/tickets/update", async () => {
+it("Rejects update request for unauthenticated user", async () => {
+  // Update fake ticket
+  await request(app).put("/api/tickets/1234asdf").send({}).expect(401);
+});
+
+it("Rejects update request for ticket owned by another user", async () => {
+  // Create fake ticket
+  const ticket = (await createDummyTicket().expect(201)).body;
+
+  // Update title and price data
+  const originalTitle: string = ticket.title;
+  const originalPrice: String = ticket.price;
+  const newTitle: string = `${ticket.title} 1`;
+  const newPrice: string = "R30.00";
+
+  // Update ticket owned by another user
+  await request(app)
+    .put(`/api/tickets/${ticket.id}`)
+    .set("Cookie", global.signInTestUser())
+    .send({
+      title: newTitle,
+      price: newPrice,
+    })
+    .expect(401);
+
+  // Get fake ticket
+  const response = await request(app)
+    .get(`/api/tickets/${ticket.id}`)
+    .expect(200);
+
+  // Validate ticket info
+  expect(response.body.title).toEqual(originalTitle);
+  expect(response.body.price).toEqual(
+    removeCurrencyFormatting(originalPrice.toString())
+  );
+});
+
+it("Accepts requests on /api/tickets/", async () => {
   // Create fake ticket
   const ticket = (await createDummyTicket().expect(201)).body;
 
@@ -13,10 +50,9 @@ it("Accepts requests on /api/tickets/update", async () => {
 
   // Update fake ticket
   await request(app)
-    .post("/api/tickets/update")
-    .set("Cookie", global.signInTestUser())
+    .put(`/api/tickets/${ticket.id}`)
+    .set("Cookie", global.signInTestUser(ticket.userID))
     .send({
-      id: ticket.id,
       title: newTitle,
       price: newPrice,
     })
@@ -32,16 +68,30 @@ it("Accepts requests on /api/tickets/update", async () => {
   expect(response.body.price).toEqual(removeCurrencyFormatting(newPrice));
 });
 
+it("Rejects update request with missing id", async () => {
+  // Create fake ticket
+  const ticket = (await createDummyTicket().expect(201)).body;
+
+  // Update fake ticket
+  await request(app)
+    .put("/api/tickets/")
+    .set("Cookie", global.signInTestUser())
+    .send({
+      title: "Reject me",
+      price: "R30.00",
+    })
+    .expect(404);
+});
+
 it("Rejects update request with missing title", async () => {
   // Create fake ticket
   const ticket = (await createDummyTicket().expect(201)).body;
 
   // Update fake ticket
   await request(app)
-    .post("/api/tickets/update")
+    .put(`/api/tickets/${ticket.id}`)
     .set("Cookie", global.signInTestUser())
     .send({
-      id: ticket.id,
       price: "R30.00",
     })
     .expect(400);
@@ -53,10 +103,9 @@ it("Rejects update request with negative price", async () => {
 
   // Update fake ticket
   await request(app)
-    .post("/api/tickets/update")
+    .put(`/api/tickets/${ticket.id}`)
     .set("Cookie", global.signInTestUser())
     .send({
-      id: ticket.id,
       title: "Reject me",
       price: "-R30.00",
     })
@@ -69,10 +118,9 @@ it("Rejects update request with missing currency symbol", async () => {
 
   // Update fake ticket
   await request(app)
-    .post("/api/tickets/update")
+    .put(`/api/tickets/${ticket.id}`)
     .set("Cookie", global.signInTestUser())
     .send({
-      id: ticket.id,
       title: "Reject me",
       price: "50.00",
     })
@@ -85,10 +133,9 @@ it("Rejects update request with wrong currency", async () => {
 
   // Update fake ticket
   await request(app)
-    .post("/api/tickets/update")
+    .put(`/api/tickets/${ticket.id}`)
     .set("Cookie", global.signInTestUser())
     .send({
-      id: ticket.id,
       title: "Reject me",
       price: "$40.00",
     })
@@ -101,10 +148,9 @@ it("Rejects update request with missing price", async () => {
 
   // Update fake ticket
   await request(app)
-    .post("/api/tickets/update")
+    .put(`/api/tickets/${ticket.id}`)
     .set("Cookie", global.signInTestUser())
     .send({
-      id: ticket.id,
       title: "Reject me",
     })
     .expect(400);
@@ -116,15 +162,8 @@ it("Rejects update request with missing title and price", async () => {
 
   // Update fake ticket
   await request(app)
-    .post("/api/tickets/update")
+    .put(`/api/tickets/${ticket.id}`)
     .set("Cookie", global.signInTestUser())
-    .send({
-      id: ticket.id,
-    })
+    .send({})
     .expect(400);
-});
-
-it("Rejects update request for unauthenticated user", async () => {
-  // Update fake ticket
-  await request(app).post("/api/tickets/update").send({}).expect(401);
 });

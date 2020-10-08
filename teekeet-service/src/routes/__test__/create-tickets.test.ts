@@ -2,7 +2,7 @@ import request from "supertest";
 import { app } from "../../app";
 import { Ticket } from "../../models/ticket";
 
-import { createDummyTicket } from "./test-base";
+import { createDummyTicket } from "./test-base.test";
 
 it("Has a route handler listening to /api/tickets for post requests", async () => {
   await request(app)
@@ -107,6 +107,12 @@ it("Creates a ticket with valid inputs", async () => {
 });
 
 it("Rejects creation of duplicate ticket", async () => {
-  await createDummyTicket(/* Use method defaults */).expect(201);
-  await createDummyTicket(/* Use method defaults */).expect(400);
+  const response = await createDummyTicket(/* Use method defaults */).expect(
+    201
+  );
+  await createDummyTicket(
+    undefined,
+    undefined,
+    response.body.userID /* Use method defaults */
+  ).expect(400);
 });

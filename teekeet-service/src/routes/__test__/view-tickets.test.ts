@@ -2,7 +2,7 @@ import request from "supertest";
 import { app } from "../../app";
 import mongoose from "mongoose";
 
-import { createDummyTicket } from "./test-base";
+import { createDummyTicket } from "./test-base.test";
 
 let dummyID = new mongoose.Types.ObjectId().toHexString();
 
