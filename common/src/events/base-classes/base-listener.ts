@@ -11,7 +11,7 @@ export abstract class NATSBaseListener<T extends iNATSEvent> extends NATSBaseCli
 
   // Setup subscription options
   subscriptionOptions() {
-    return this.stan
+    return NATSBaseClient.stan!
       .subscriptionOptions()
       .setManualAckMode(true) // Ensure NATSSS doesn't assume successfull processing of a message
       .setAckWait(this.ackWait)
@@ -19,46 +19,43 @@ export abstract class NATSBaseListener<T extends iNATSEvent> extends NATSBaseCli
       .setDurableName(this.queueGroupName); // Required to allow a listener to catchup with missed messages by having NATSSS track delivery status of each message
   }
 
-  onClientConnected() {
-    console.log(`New StreamHealthListener started for ${this.subject} within ${this.queueGroupName}`);
-    
-    console.log("Registering subscriptions...");
-    this.registerSubscriptions();
-  }
-
-  protected registerSubscriptions() {
+  protected registerSubscriptions() : Promise<void> {
     // Register new subscription for subject and within a queue group
-    const subscription = this.stan.subscribe(
+    const subscription = NATSBaseClient.stan!.subscribe(
       this.subject,
       this.queueGroupName,
       this.subscriptionOptions()
     );
 
-    subscription.on("ready", (sub: Subscription) => {
-      console.log(`Subscription with subject ${this.subject} for ${this.queueGroupName} is registered.`);
+    return new Promise((resolve, reject) => {
+      subscription.on("ready", (sub: Subscription) => {
+        console.log(`Subscription with subject ${this.subject} for ${this.queueGroupName} is registered.`);
+      
+        // Register event handlers/callbacks  
+        subscription.on('error', (err) => {
+          console.log('subscription failed', err);
+          reject(err);
+        });
+        subscription.on('timeout', (err) => {
+            console.log('subscription timeout', err)
+        });
+        subscription.on('unsubscribed', () => {
+            console.log('subscription unsubscribed')
+        });
+        subscription.on("close", () => {
+          console.log("Subscription closed, exiting process gracefully...I hope.");
+          process.exit();
+        });
 
-      // Register event handlers/callbacks
-      subscription.on("message", (msg: Message) => {
-        console.log(`${msg.getSequence()}: "${msg.getSubject()}" received.`);
-
-        this.onMessage(this.parseMessage(msg), msg);
+        subscription.on("message", (msg: Message) => {
+          console.log(`${msg.getSequence()}: "${msg.getSubject()}" received.`);
+  
+          this.onMessage(this.parseMessage(msg), msg);
+        });
+  
+        console.log("Registered default event handlers for subscription.");
+        resolve();
       });
-
-      subscription.on('error', (err) => {
-        console.log('subscription failed', err);
-      });
-      subscription.on('timeout', (err) => {
-          console.log('subscription timeout', err)
-      });
-      subscription.on('unsubscribed', () => {
-          console.log('subscription unsubscribed')
-      });
-      subscription.on("close", () => {
-        console.log("Subscription closed, exiting process gracefully...I hope.");
-        process.exit();
-      });
-
-      console.log("Registered default event handlers for subscription.");
     });
   }
 

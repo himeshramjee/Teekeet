@@ -6,8 +6,16 @@ class StreamHealthPublisher extends NATSBasePublisher<iNatsHealthDeepPingEvent> 
   subject: Subjects.NATS_HEALTH_DEEP_PING = Subjects.NATS_HEALTH_DEEP_PING;
   public clientConnected = false;
 
-  onClientConnected() {
-    console.log(`Publisher with subject ${this.subject} connected to NATS on port 4222`);
+  constructor() {
+    super();
+    this.init();
+  }
+
+  async init() {
+    await this.connect("teekeet-streaming-cluster", 
+      "natsss-demo-stream", 
+      "http://localhost:4222"
+      );
   }
 
   async publishEvent(data?: iNatsHealthDeepPingEvent["data"]) {
@@ -31,6 +39,7 @@ class StreamHealthPublisher extends NATSBasePublisher<iNatsHealthDeepPingEvent> 
 }
 
 const publisherClient: StreamHealthPublisher = new StreamHealthPublisher();
+
 setInterval(async () => {
   await publisherClient.publishEvent()
   .then(guid => {
@@ -40,4 +49,4 @@ setInterval(async () => {
   .catch(error => {
     console.error(`Failed to publish message via StreamHealthPublisher. Error: ${error}`)
   });
-}, 10000);
+}, 60000);

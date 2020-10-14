@@ -11,3 +11,14 @@ export * from "./middlewares/current-user";
 export * from "./middlewares/error-handler";
 export * from "./middlewares/require-authN";
 export * from "./middlewares/validate-request";
+
+export * from "./events/base-classes/base-client";
+export * from "./events/base-classes/base-listener";
+export * from "./events/base-classes/base-publisher";
+export * from "./events/interfaces/iEvent";
+export * from "./events/interfaces/iNat-health-deep-ping-event";
+export * from "./events/listeners/stream-health-listener";
+export * from "./events/interfaces/iTicketCreatedEvent";
+export * from "./events/interfaces/iTicketUpdatedEvent";
+export * from "./events/publishers/stream-health-publisher";
+export * from "./events/types/nats-custom-types";
