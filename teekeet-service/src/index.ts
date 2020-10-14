@@ -7,16 +7,26 @@ const start = async () => {
   if (
     !process.env.JWT_KEY ||
     !process.env.MONGO_URI ||
-    !process.env.MAX_SIZE_JSON_REQUEST
+    !process.env.MAX_SIZE_JSON_REQUEST ||
+    !process.env.NATS_URI ||
+    !process.env.NATS_CLUSTER_ID ||
+    !process.env.NATS_CLIENT_ID_PREFIX
   ) {
     throw new Error("Missing environment variables.");
   } else {
     console.info(
-      `Using environment variables: JWT_KEY=<redacted>, MONGO_URI=${process.env.MONGO_URI}, MAX_SIZE_JSON_REQUEST=${process.env.MAX_SIZE_JSON_REQUEST}`
+      `[teekeet-service] Using environment variables: 
+      \n\tJWT_KEY=<redacted>
+      \n\tMONGO_URI=${process.env.MONGO_URI}
+      \n\tMAX_SIZE_JSON_REQUEST=${process.env.MAX_SIZE_JSON_REQUEST}
+      \n\tNATS_URI=${process.env.NATS_URI}
+      \n\tNATS_CLUSTER_ID=${process.env.NATS_CLUSTER_ID}
+      \n\tNATS_CLIENT_ID_PREFIX=${process.env.NATS_CLIENT_ID_PREFIX}\n`
     );
   }
   const teekeetMongoDBEndpoint = process.env.MONGO_URI;
 
+  // Connect to Mongoose
   await mongoose
     .connect(teekeetMongoDBEndpoint, {
       useNewUrlParser: true,

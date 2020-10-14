@@ -1,16 +1,12 @@
 import express, { Request, Response } from "express";
 import { Ticket } from "../models/ticket";
-import {
-  removeCurrencyFormatting,
-  defaultCurrencySymbol,
-} from "../utils/currency-utils";
-import {
-  checkUserIsAuthorized,
-  NotAuthorizedError,
-  NotFoundError,
-  validateRequest,
-} from "@chaiwala/common";
+import { removeCurrencyFormatting } from "../utils/currency-utils";
+import { defaultCurrencySymbol } from  "../utils/currency-utils";
+import { checkUserIsAuthorized, NotAuthorizedError } from "@chaiwala/common";
+import { NotFoundError, validateRequest } from "@chaiwala/common";
+
 import { body, param } from "express-validator";
+import { ticketUpdatedPublisher } from "../events/publishers/ticket-updated-publisher";
 
 const router = express.Router();
 
@@ -56,6 +52,14 @@ router.put(
     ticketToUpdate.title = title;
     ticketToUpdate.price = removeCurrencyFormatting(price);
     await ticketToUpdate.save();
+
+    // Publish ticket updated event
+    await ticketUpdatedPublisher.publishEvent({
+        id: ticketToUpdate.id,
+        userID: ticketToUpdate.userID,
+        price: ticketToUpdate.price,
+        title: ticketToUpdate.title
+      });
 
     res.status(200).send(ticketToUpdate);
   }

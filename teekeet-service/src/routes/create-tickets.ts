@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import { body } from "express-validator";
+import { ticketCreatedPublisher } from "../events/publishers/ticket-created-publisher";
 
 import {
   checkUserIsAuthorized,
@@ -54,6 +55,14 @@ router.post(
       // Add new ticket to database
       const newTicket = Ticket.build({ title, price, userID });
       await newTicket.save();
+
+      // Publish new ticket event
+      await ticketCreatedPublisher.publishEvent({
+        id: newTicket.id,
+        userID: newTicket.userID,
+        price: newTicket.price,
+        title: newTicket.title
+      });
 
       return res.status(201).send(newTicket);
     }
