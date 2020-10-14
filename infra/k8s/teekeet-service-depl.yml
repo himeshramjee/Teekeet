@@ -33,6 +33,14 @@ spec:
                   key: JWT_KEY
             - name: MAX_SIZE_JSON_REQUEST
               value: "10KB"
+            - name: NATS_URI
+              value: "nats://nats-streaming-server-clusterip-srv:4222"
+            - name: NATS_CLUSTER_ID
+              value: "teekeet-streaming-cluster"
+            - name: NATS_CLIENT_ID_PREFIX
+              value: "natsss-demo-stream"
+            - name: NATS_HEALTH_EVENTS_ENABLED
+              value: "false"
 ---
 apiVersion: v1
 kind: Service

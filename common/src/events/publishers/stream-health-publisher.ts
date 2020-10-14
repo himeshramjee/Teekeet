@@ -12,10 +12,7 @@ class StreamHealthPublisher extends NATSBasePublisher<iNatsHealthDeepPingEvent> 
   }
 
   async init() {
-    await this.connect("teekeet-streaming-cluster", 
-      "natsss-demo-stream", 
-      "http://localhost:4222"
-      );
+    await this.connect(process.env.NATS_CLUSTER_ID!, process.env.NATS_CLIENT_ID_PREFIX!, process.env.NATS_URI!);
   }
 
   async publishEvent(data?: iNatsHealthDeepPingEvent["data"]) {
@@ -38,15 +35,17 @@ class StreamHealthPublisher extends NATSBasePublisher<iNatsHealthDeepPingEvent> 
   }
 }
 
-const publisherClient: StreamHealthPublisher = new StreamHealthPublisher();
+if (process.env.NATS_HEALTH_EVENTS_ENABLED) {
+  const publisherClient: StreamHealthPublisher = new StreamHealthPublisher();
 
-setInterval(async () => {
-  await publisherClient.publishEvent()
-  .then(guid => {
-    // FIXME: Why is guid still undefined at this point?
-    console.log(`\t Event published. Guid: ${guid}`);
-  })
-  .catch(error => {
-    console.error(`Failed to publish message via StreamHealthPublisher. Error: ${error}`)
-  });
-}, 60000);
+  setInterval(async () => {
+    await publisherClient.publishEvent()
+    .then(guid => {
+      // FIXME: Why is guid still undefined at this point?
+      console.log(`\t Event published. Guid: ${guid}`);
+    })
+    .catch(error => {
+      console.error(`Failed to publish message via StreamHealthPublisher. Error: ${error}`)
+    });
+  }, 60000);
+}

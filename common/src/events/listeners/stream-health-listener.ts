@@ -13,7 +13,7 @@ export class StreamHealthListener extends NATSBaseListener<iNatsHealthDeepPingEv
   }
 
   async init() {
-    await this.connect("teekeet-streaming-cluster", "natsss-demo-stream", "http://localhost:4222");
+    await this.connect(process.env.NATS_CLUSTER_ID!, process.env.NATS_CLIENT_ID_PREFIX!, process.env.NATS_URI!);
     await this.registerSubscriptions();
   }
 
@@ -25,5 +25,7 @@ export class StreamHealthListener extends NATSBaseListener<iNatsHealthDeepPingEv
   }
 }
 
-const healthListener: StreamHealthListener = new StreamHealthListener();
+if (process.env.NATS_HEALTH_EVENTS_ENABLED) {
+  const healthListener: StreamHealthListener = new StreamHealthListener();
+}
 
