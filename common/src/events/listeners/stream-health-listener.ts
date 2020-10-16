@@ -18,14 +18,8 @@ export class StreamHealthListener extends NATSBaseListener<iNatsHealthDeepPingEv
   }
 
   onMessage(data: iNatsHealthDeepPingEvent["data"], msg: Message) {
-    console.log(`${msg.getSequence()}: Processing "${msg.getSubject()}".`);
-    console.log(`\tData: ${data.message}`);
+    console.log(`\t[${this.constructor.name}] ${msg.getSequence()}: Processing ${msg.getSubject()}.`);
 
     msg.ack();
   }
 }
-
-if (process.env.NATS_HEALTH_EVENTS_ENABLED) {
-  const healthListener: StreamHealthListener = new StreamHealthListener();
-}
-

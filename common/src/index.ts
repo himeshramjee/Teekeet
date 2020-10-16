@@ -37,8 +37,8 @@ if (
   throw new Error("[@chaiwala/common] Missing environment variables.");
 } else {
   console.info(
-    `[@chaiwala/common] Using environment variables: 
-    \n\tJWT_KEY=<redacted>
+    `\n[@chaiwala/common] Using environment variables: 
+    \tJWT_KEY=<redacted>
     \n\tMONGO_URI=${process.env.MONGO_URI}
     \n\tMAX_SIZE_JSON_REQUEST=${process.env.MAX_SIZE_JSON_REQUEST}
     \n\tNATS_URI=${process.env.NATS_URI}

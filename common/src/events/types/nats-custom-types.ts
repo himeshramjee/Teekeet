@@ -6,5 +6,5 @@ export enum Subjects {
 
 export enum ListenerGroups {
   NAT_HEALTH_LISTENERS = "nats-health-listener-queue-group",
-  TEEKEET_TICKET_LISTENERS = "nats-health-listener-queue-group"
+  TEEKEET_TICKET_LISTENERS = "teekeet-ticket-listener-queue-group"
 }

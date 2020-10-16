@@ -2,13 +2,12 @@ import nats, { Stan } from "node-nats-streaming";
 import { randomBytes } from "crypto";
 
 export abstract class NATSBaseClient {
-  protected static stan?: Stan;
-  private static connected: boolean = false;
+  private stan?: Stan;
 
   public connect(clusterID: string, clientIDPrefix: string, natsssURI: string) : Promise<void> {
-    console.log(`Connecting client to ${natsssURI}/${clusterID}...`);
+    console.log(`[${this.constructor.name}] Connecting client to ${natsssURI}/${clusterID}...`);
 
-    NATSBaseClient.stan = nats.connect(
+    this.stan = nats.connect(
       clusterID,
       `${clientIDPrefix}-${randomBytes(4).toString("hex")}`,
       {
@@ -18,42 +17,42 @@ export abstract class NATSBaseClient {
 
     return new Promise((resolve, reject) => {
       // Register event handlers/callbacks
-      NATSBaseClient.stan!.on("connect", () => {
-        console.log("NATS client connected.");
-        NATSBaseClient.connected = true;
+      this.natsClient.on("connect", () => {
+        console.log(`[${this.constructor.name}] NATS client connected.`);
         resolve();
       });
       
-      NATSBaseClient.stan!.on("reconnected", (err) => {
-        console.log("NATS client lost connection and is attempting to reconnect...\n");
-        NATSBaseClient.connected = false;
+      this.natsClient.on("reconnected", (err) => {
+        console.log(`[${this.constructor.name}] NATS client lost connection and is attempting to reconnect...\n`);
         reject(err);
       });
       
-      NATSBaseClient.stan!.on("reconnected", (err) => {
-        console.log("NATS client lost connection and has now reconnected\n'");
-        NATSBaseClient.connected = true;
+      this.natsClient.on("reconnected", (err) => {
+        console.log(`[${this.constructor.name}] NATS client lost connection and has now reconnected\n'`);
       });
       
-      NATSBaseClient.stan!.on("error", (err) => {
-        console.error(`Doh! Unhandled exception in Nats client. Error: ${err}`);
-        NATSBaseClient.connected = false;
+      this.natsClient.on("error", (err) => {
+        console.log(`[${this.constructor.name}] Doh! Unhandled exception in Nats client. Error: ${err}`);
       });
       
-      NATSBaseClient.stan!.on("close", () => {
-        console.log("Client connection closed. Exiting process gracefully...I hope.");
-        NATSBaseClient.connected = false;
-        process.exit();
+      this.natsClient.on("close", () => {
+        console.log(`[${this.constructor.name}] Client connection closed. Exiting process gracefully...I hope.`);
       });
       
       // FIXME: Not sure if these are OS/platform agnostic signal names
       process.on("SIGINT", () => {
-        NATSBaseClient.stan?.close();
+        this.natsClient.close();
       });
       process.on("SIGTERM", () => { 
-        NATSBaseClient.stan?.close();
+        this.natsClient.close();
       });
     });
+  }
 
+  get natsClient() {
+    if (!this.stan) {
+      throw new Error("Nats client has not been initialzed.");
+    }
+    return this.stan;
   }
 }

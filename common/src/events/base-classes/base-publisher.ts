@@ -6,9 +6,8 @@ export abstract class NATSBasePublisher<T extends iNATSEvent> extends NATSBaseCl
   
   async publish(data: T["data"]) : Promise<string> {
     return new Promise((resolve, reject) =>  {
-      console.log("Processing publish request...");
       // Publish a message
-      NATSBaseClient.stan!.publish(
+      this.natsClient.publish(
         this.subject,
         JSON.stringify(data),
         (err, guid) => {
@@ -16,7 +15,7 @@ export abstract class NATSBasePublisher<T extends iNATSEvent> extends NATSBaseCl
             console.log(`Failed to publish ping. Error: ${err}`);
             return reject(err);
           } else {
-            console.log(`Ping message published. Guid: ${guid}`);
+            console.log(`\t[${this.constructor.name}] Message published. Guid: ${guid}`);
             resolve(guid);
           }
         }
