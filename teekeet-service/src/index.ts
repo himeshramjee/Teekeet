@@ -15,8 +15,8 @@ const start = async () => {
     throw new Error("Missing environment variables.");
   } else {
     console.info(
-      `[teekeet-service] Using environment variables: 
-      \n\tJWT_KEY=<redacted>
+      `\n[teekeet-service] Using environment variables: 
+      \tJWT_KEY=<redacted>
       \n\tMONGO_URI=${process.env.MONGO_URI}
       \n\tMAX_SIZE_JSON_REQUEST=${process.env.MAX_SIZE_JSON_REQUEST}
       \n\tNATS_URI=${process.env.NATS_URI}
@@ -43,7 +43,7 @@ const start = async () => {
       });
     })
     .catch((e) => {
-      // FIXME: Figure out why I'm still getting the UnhandledPromiseException when mongoDb connectivity fails
+      // FIXME: [Needs retest] Figure out why I'm still getting the UnhandledPromiseException when mongoDb connectivity fails
       console.log(
         "Teekeet Service Mongo DB connection failed with Error: " + e.message
       );

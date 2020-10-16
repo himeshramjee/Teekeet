@@ -3,7 +3,7 @@ import { NATSBaseListener } from "@chaiwala/common";
 import { iTicketUpdatedEvent } from "@chaiwala/common";
 import { ListenerGroups, Subjects } from "@chaiwala/common";
 
-class TicketUpdatedListener extends NATSBaseListener<iTicketUpdatedEvent> {
+export class TicketUpdatedListener extends NATSBaseListener<iTicketUpdatedEvent> {
   readonly subject: Subjects.TEEKEET_UPDATED = Subjects.TEEKEET_UPDATED;
   readonly queueGroupName = ListenerGroups.TEEKEET_TICKET_LISTENERS;
 
@@ -18,11 +18,8 @@ class TicketUpdatedListener extends NATSBaseListener<iTicketUpdatedEvent> {
   }
 
   onMessage(data: iTicketUpdatedEvent["data"], msg: Message) {
-    console.log(`${msg.getSequence()}: Processing "${msg.getSubject()}".`);
-    console.log(`\tData: ${data}`);
+    console.log(`\t[${this.constructor.name}] #${msg.getSequence()}: Processing "${msg.getSubject()}".`);
 
     msg.ack();
   }
 }
-
-export const ticketUpdatedListener: TicketUpdatedListener = new TicketUpdatedListener();

@@ -17,11 +17,11 @@ class TicketCreatedPublisher extends NATSBasePublisher<iTicketCreatedEvent> {
   async publishEvent(data: iTicketCreatedEvent["data"]) {
     await this.publish(data)
     .then(response => {
-      console.log(`iTicketCreatedEvent event published. Guid: ${response}`)
+      console.log(`\t[${this.constructor.name}] Event published. Guid: ${response}`)
       return response;
     })
     .catch(err => {
-      console.log(`Failed to publish iTicketCreatedEvent event. Error: ${err}`);
+      console.log(`\t[${this.constructor.name}] Failed to publish event. Error: ${err.name}`);
     });
   }
 }

@@ -3,15 +3,13 @@ import { NATSBaseListener } from "@chaiwala/common";
 import { iTicketCreatedEvent } from "@chaiwala/common";
 import { ListenerGroups, Subjects } from "@chaiwala/common";
 
-class TicketCreatedListener extends NATSBaseListener<iTicketCreatedEvent> {
+export class TicketCreatedListener extends NATSBaseListener<iTicketCreatedEvent> {
   readonly subject: Subjects.TEEKEET_CREATED = Subjects.TEEKEET_CREATED;
   readonly queueGroupName = ListenerGroups.TEEKEET_TICKET_LISTENERS;
 
   constructor() {
     super();
-    console.log("TicketCreatedListener super() completed.");
     this.init();
-    console.log("TicketCreatedListener init completed.");
   }
 
   async init() {
@@ -20,11 +18,8 @@ class TicketCreatedListener extends NATSBaseListener<iTicketCreatedEvent> {
   }
 
   onMessage(data: iTicketCreatedEvent["data"], msg: Message) {
-    console.log(`${msg.getSequence()}: Processing "${msg.getSubject()}".`);
-    console.log(`\tData: ${data}`);
+    console.log(`\t[${this.constructor.name}] #${msg.getSequence()}: Processing "${msg.getSubject()}".`);
 
     msg.ack();
   }
 }
-
-export const ticketCreatedListener: TicketCreatedListener = new TicketCreatedListener();
