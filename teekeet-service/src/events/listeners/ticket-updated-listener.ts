@@ -12,7 +12,7 @@ export class TicketUpdatedListener extends NATSBaseListener<iTicketUpdatedEvent>
     this.init();
   }
 
-  async init() {
+  private async init() {
     await this.connect(process.env.NATS_CLUSTER_ID!, process.env.NATS_CLIENT_ID_PREFIX!, process.env.NATS_URI!);
     await this.registerSubscriptions();
   }

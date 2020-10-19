@@ -1,5 +1,6 @@
 import request from "supertest";
 import { app } from "../../app";
+import { ticketCreatedPublisher } from "../../events/publishers/ticket-created-publisher";
 import { Ticket } from "../../models/ticket";
 
 import { createDummyTicket } from "./test-base.test";
@@ -115,4 +116,12 @@ it("Rejects creation of duplicate ticket", async () => {
     undefined,
     response.body.userID /* Use method defaults */
   ).expect(400);
+});
+
+it("Publishes an event when a ticket is created", async() => {
+  const response = await createDummyTicket(/* Use method defaults */).expect(
+    201
+  );
+
+  expect(ticketCreatedPublisher.publishEvent).toHaveBeenCalled();
 });

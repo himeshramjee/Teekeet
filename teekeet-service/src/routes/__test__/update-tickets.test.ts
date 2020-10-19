@@ -2,6 +2,7 @@ import request from "supertest";
 import { app } from "../../app";
 import { createDummyTicket } from "./test-base.test";
 import { removeCurrencyFormatting } from "../../utils/currency-utils";
+import { ticketUpdatedPublisher } from "../../events/publishers/ticket-updated-publisher";
 
 it("Rejects update request for unauthenticated user", async () => {
   // Update fake ticket
@@ -166,4 +167,25 @@ it("Rejects update request with missing title and price", async () => {
     .set("Cookie", global.signInTestUser())
     .send({})
     .expect(400);
+});
+
+it("Publishes an event when a ticket is updated", async() => {
+  // Create fake ticket
+  const ticket = (await createDummyTicket().expect(201)).body;
+
+  // Update title and price data
+  const newTitle = `${ticket.title} 1`;
+  const newPrice = "R30.00";
+
+  // Update fake ticket
+  await request(app)
+    .put(`/api/tickets/${ticket.id}`)
+    .set("Cookie", global.signInTestUser(ticket.userID))
+    .send({
+      title: newTitle,
+      price: newPrice,
+    })
+    .expect(200);
+
+  expect(ticketUpdatedPublisher.publishEvent).toHaveBeenCalled();
 });

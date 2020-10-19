@@ -10,6 +10,11 @@ declare global {
   }
 }
 
+jest.mock("../events/publishers/ticket-created-publisher");
+jest.mock("../events/publishers/ticket-updated-publisher");
+jest.mock("../events/listeners/ticket-created-listener");
+jest.mock("../events/listeners/ticket-updated-listener");
+
 let mongo: MongoMemoryServer;
 
 beforeAll(async () => {

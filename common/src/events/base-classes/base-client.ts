@@ -50,6 +50,7 @@ export abstract class NATSBaseClient {
   }
 
   get natsClient() {
+    // FIXME: Would be great to initialize and/or reconnect here so that clients really only ever interact with this getter.
     if (!this.stan) {
       throw new Error("Nats client has not been initialzed.");
     }
