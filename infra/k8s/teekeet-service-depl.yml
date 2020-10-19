@@ -38,7 +38,9 @@ spec:
             - name: NATS_CLUSTER_ID
               value: "teekeet-streaming-cluster"
             - name: NATS_CLIENT_ID_PREFIX
-              value: "natsss-demo-stream"
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             - name: NATS_HEALTH_EVENTS_ENABLED
               value: "true"
 ---
