@@ -4,7 +4,7 @@ import { randomBytes } from "crypto";
 export abstract class NATSBaseClient {
   private stan?: Stan;
 
-  public connect(clusterID: string, clientIDPrefix: string, natsssURI: string) : Promise<void> {
+  public connect(clusterID: string = process.env.NATS_CLUSTER_ID!, clientIDPrefix: string = process.env.NATS_CLIENT_ID_PREFIX!, natsssURI: string = process.env.NATS_URI!) : Promise<void> {
     console.log(`[${this.constructor.name}] Connecting client to ${natsssURI}/${clusterID}...`);
 
     this.stan = nats.connect(
@@ -50,7 +50,7 @@ export abstract class NATSBaseClient {
   }
 
   get natsClient() {
-    // FIXME: Would be great to initialize and/or reconnect here so that clients really only ever interact with this getter.
+    // FIXME: Would be great to re-initialize and/or reconnect here so that clients really only ever interact with this getter. Need to investigate the connection handling internals of NATS Streaming client first.
     if (!this.stan) {
       throw new Error("Nats client has not been initialzed.");
     }

@@ -13,7 +13,8 @@ export class StreamHealthListener extends NATSBaseListener<iNatsHealthDeepPingEv
   }
 
   async init() {
-    await this.connect(process.env.NATS_CLUSTER_ID!, process.env.NATS_CLIENT_ID_PREFIX!, process.env.NATS_URI!);
+    // await this.connect(process.env.NATS_CLUSTER_ID!, process.env.NATS_CLIENT_ID_PREFIX!, process.env.NATS_URI!);
+    await this.connect();
     await this.registerSubscriptions();
   }
 

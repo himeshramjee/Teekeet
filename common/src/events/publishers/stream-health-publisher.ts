@@ -12,7 +12,8 @@ export class StreamHealthPublisher extends NATSBasePublisher<iNatsHealthDeepPing
   }
 
   async init() {
-    await this.connect(process.env.NATS_CLUSTER_ID!, process.env.NATS_CLIENT_ID_PREFIX!, process.env.NATS_URI!);
+    // await this.connect(process.env.NATS_CLUSTER_ID!, process.env.NATS_CLIENT_ID_PREFIX!, process.env.NATS_URI!);
+    await this.connect();
   }
 
   async publishEvent(data?: iNatsHealthDeepPingEvent["data"]) {
