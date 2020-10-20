@@ -24,10 +24,11 @@ export class StreamHealthPublisher extends NATSBasePublisher<iNatsHealthDeepPing
         message: "[Default message] Deep ping from Publisher",
       };
     }
+    console.log(`[${this.constructor.name}] Publishing new Ping event.`)
 
     await this.publish(data)
     .then(response => {
-      console.log(`\t[${this.constructor.name}] Event published. Guid: ${response}`)
+      console.log(`\t[${this.constructor.name}] Event published. Guid: ${response}`);
       return response;
     })
     .catch(err => {
