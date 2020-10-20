@@ -18,6 +18,10 @@ spec:
             backend:
               serviceName: teekeet-service-clusterip-srv
               servicePort: 7001
+          - path: /api/orders/?(.*)
+            backend:
+                serviceName: order-service-clusterip-srv
+                servicePort: 7001
           - path: /?(.*)
             backend:
               serviceName: client-webapp-clusterip-srv

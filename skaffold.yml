@@ -26,6 +26,14 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: himeshramjee/order-service
+      context: order-service
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
     - image: himeshramjee/teekeet-client-web-app
       context: client
       docker:

@@ -16,7 +16,7 @@ const start = async () => {
     throw new Error("Missing environment variables.");
   } else {
     console.info(
-      `\n[teekeet-service] Using environment variables: 
+      `\n[order-service] Using environment variables: 
       \tJWT_KEY=<redacted>
       \n\tPORT=${process.env.port}
       \n\tMONGO_URI=${process.env.MONGO_URI}
@@ -41,13 +41,13 @@ const start = async () => {
       );
 
       app.listen(process.env.PORT, () => {
-        console.log("Teekeet Service v0.0.0 listening on port 7001...");
+        console.log("Order Service v0.0.0 listening on port 7002...");
       });
     })
     .catch((e) => {
       // FIXME: [Needs retest] Figure out why I'm still getting the UnhandledPromiseException when mongoDb connectivity fails
       console.log(
-        "Teekeet Service Mongo DB connection failed with Error: " + e.message
+        "Order Service Mongo DB connection failed with Error: " + e.message
       );
       throw new DatabaseConnectionError(
         teekeetMongoDBEndpoint,

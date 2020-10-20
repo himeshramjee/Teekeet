@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: teekeet-service-depl
+  name: order-service-depl
 spec:
   selector:
     matchLabels:
-      app: teekeet-service
+      app: order-service
   template:
     metadata:
       labels:
-        app: teekeet-service
+        app: order-service
     spec:
       containers:
-        - name: teekeet-service
-          image: himeshramjee/teekeet-service
+        - name: order-service
+          image: himeshramjee/order-service
           resources:
             requests:
               memory: "100Mi"
@@ -22,12 +22,12 @@ spec:
               memory: "256Mi"
               cpu: "250m"
           ports:
-            - containerPort: 7001
+            - containerPort: 7002
           env:
             - name: PORT
-              value: "7001"
+              value: "7002"
             - name: MONGO_URI
-              value: "mongodb://teekeet-service-mongo-db-clusterip-srv:27017/tickets"
+              value: "mongodb://order-service-mongo-db-clusterip-srv:27017/orders"
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
@@ -43,19 +43,17 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
-            - name: NATS_HEALTH_EVENTS_ENABLED
-              value: "false"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: teekeet-service-clusterip-srv
+  name: order-service-clusterip-srv
 spec:
   type: ClusterIP
   selector:
-    app: teekeet-service
+    app: order-service
   ports:
-    - name: teekeet-service
+    - name: order-service
       protocol: TCP
-      port: 7001
-      targetPort: 7001
+      port: 7002
+      targetPort: 7002
