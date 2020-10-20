@@ -6,11 +6,9 @@ import {
   checkUserIsAuthorized,
   validateRequest,
   BadRequestError,
-} from "@chaiwala/common";
-import {
   defaultCurrencySymbol,
-  removeCurrencyFormatting,
-} from "../utils/currency-utils";
+  removeCurrencyFormatting
+} from "@chaiwala/common";
 
 import { Ticket } from "../models/ticket";
 

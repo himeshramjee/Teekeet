@@ -1,7 +1,7 @@
 import request from "supertest";
 import { app } from "../../app";
 import { createDummyTicket } from "./test-base.test";
-import { removeCurrencyFormatting } from "../../utils/currency-utils";
+import { removeCurrencyFormatting } from "@chaiwala/common";
 import { ticketUpdatedPublisher } from "../../events/publishers/ticket-updated-publisher";
 
 it("Rejects update request for unauthenticated user", async () => {

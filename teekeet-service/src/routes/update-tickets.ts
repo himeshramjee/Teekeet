@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import { Ticket } from "../models/ticket";
-import { removeCurrencyFormatting } from "../utils/currency-utils";
-import { defaultCurrencySymbol } from  "../utils/currency-utils";
+import { removeCurrencyFormatting } from "@chaiwala/common";
+import { defaultCurrencySymbol } from "@chaiwala/common";
 import { checkUserIsAuthorized, NotAuthorizedError } from "@chaiwala/common";
 import { NotFoundError, validateRequest } from "@chaiwala/common";
 
