@@ -23,6 +23,7 @@ export * from "./events/interfaces/iTicketUpdatedEvent";
 export * from "./events/publishers/stream-health-publisher";
 export * from "./events/types/nats-custom-types";
 
+// Basic currency manipulation utility
 export * from "./utils/currency-utils";
 
 // The URI assumes you open a pipe between the k8s cluster to your local host
