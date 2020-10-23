@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express";
 import { Ticket } from "../models/ticket";
 import { removeCurrencyFormatting } from "@chaiwala/common";
-import { defaultCurrencySymbol } from "@chaiwala/common";
 import { checkUserIsAuthorized, NotAuthorizedError } from "@chaiwala/common";
 import { NotFoundError, validateRequest } from "@chaiwala/common";
 
@@ -23,11 +22,11 @@ router.put(
     body("price")
       .isCurrency({
         allow_negatives: false,
-        symbol: defaultCurrencySymbol,
         require_symbol: true,
       })
-      .withMessage(
-        `Invalid currency or value (expected format: ${defaultCurrencySymbol}1,010.10)`
+      .withMessage((value) => {
+        return `Invalid currency or value (expected format: <currency-symbol> 1,000,010.10 but got ${value}.)`;
+        } 
       )
       .bail(),
   ],

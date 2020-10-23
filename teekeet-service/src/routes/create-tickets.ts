@@ -6,7 +6,6 @@ import {
   checkUserIsAuthorized,
   validateRequest,
   BadRequestError,
-  defaultCurrencySymbol,
   removeCurrencyFormatting
 } from "@chaiwala/common";
 
@@ -26,11 +25,11 @@ router.post(
     body("price")
       .isCurrency({
         allow_negatives: false,
-        symbol: defaultCurrencySymbol,
-        require_symbol: true,
+        allow_space_after_symbol: true
       })
-      .withMessage(
-        `Invalid currency or value (expected format: ${defaultCurrencySymbol}1,010.10)`
+      .withMessage((value) => {
+        return `Invalid currency or value (expected format: <currency-symbol> 1,000,010.10 but got ${value}.)`;
+        } 
       ),
   ],
   validateRequest,
