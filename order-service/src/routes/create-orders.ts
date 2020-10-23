@@ -33,8 +33,6 @@ checkUserIsAuthorized,
     .withMessage((value) => { return `Invalid ticket id: ${value}.` })
     .bail(),
   body("price")
-    // FIXME: Still wrestling this fukn thing, trying to get the JS Intl and Express-Validator formatters to play nice.
-    // Sample failure "expected format: R 1,000,010.10 but got R 10.00". Yep so I'm not sure why this fails the validation. Found the source code at: https://github.com/validatorjs/validator.js/blob/master/src/lib/isCurrency.js
     .isCurrency({
       allow_negatives: false
     })
