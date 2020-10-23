@@ -1,6 +1,6 @@
 {
   "name": "@chaiwala/common",
-  "version": "1.0.34",
+  "version": "1.0.38",
   "description": "Common modules, like auth, that I think I'll use across my personal projects.",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
