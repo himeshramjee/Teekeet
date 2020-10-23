@@ -1,0 +1,1 @@
+Shared artifacts for the Teekeet domain. e.g. shared models, configuration, validation logic. The naming and structure would need to be reconsidered if there's a need to add shared business logic to this package. "common" is too generic for that purpose.
