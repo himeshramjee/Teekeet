@@ -7,6 +7,10 @@ import cookieSession from "cookie-session";
 
 import { errorHandler, NotFoundError, setCurrentUser } from "@chaiwala/common";
 
+import { createOrdersRouter } from "./routes/create-orders";
+import { viewOrdersRouter } from "./routes/view-orders";
+import { updateOrdersRouter } from "./routes/update-orders";
+
 const app = express();
 
 app.set("trust proxy", true); // Express is behind a proxy and should trust ssl traffic from ingress nginx
@@ -22,6 +26,10 @@ app.use(
 
 // Ensure every request can check the current user and their auth state
 app.use(setCurrentUser);
+
+app.use(createOrdersRouter);
+app.use(viewOrdersRouter);
+app.use(updateOrdersRouter);
 
 // Register route handlers
 app.all("*", (req, res) => {

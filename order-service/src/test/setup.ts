@@ -41,7 +41,7 @@ global.signInTestUser = (
   // Build a JWT payload { id, email }
   const payload = {
     id: id,
-    email: "teeekeet-service-test-user-0@teekeet.com",
+    email: "order-service-test-user-0@teekeet.com",
   };
 
   // Create the JWT

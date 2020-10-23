@@ -11,7 +11,8 @@ const start = async () => {
     !process.env.MAX_SIZE_JSON_REQUEST ||
     !process.env.NATS_URI ||
     !process.env.NATS_CLUSTER_ID ||
-    !process.env.NATS_CLIENT_ID_PREFIX
+    !process.env.NATS_CLIENT_ID_PREFIX ||
+    !process.env.ORDER_EXPIRATION_WINDOW_SECONDS
   ) {
     throw new Error("Missing environment variables.");
   } else {
@@ -23,7 +24,8 @@ const start = async () => {
       \n\tMAX_SIZE_JSON_REQUEST=${process.env.MAX_SIZE_JSON_REQUEST}
       \n\tNATS_URI=${process.env.NATS_URI}
       \n\tNATS_CLUSTER_ID=${process.env.NATS_CLUSTER_ID}
-      \n\tNATS_CLIENT_ID_PREFIX=${process.env.NATS_CLIENT_ID_PREFIX}\n`
+      \n\tNATS_CLIENT_ID_PREFIX=${process.env.NATS_CLIENT_ID_PREFIX}
+      \n\tEXPIRATION_WINDOW_SECONDS=${process.env.ORDER_EXPIRATION_WINDOW_SECONDS}\n`
     );
   }
   const teekeetMongoDBEndpoint = process.env.MONGO_URI;
