@@ -2,15 +2,16 @@ import request from "supertest";
 import { app } from "../../app";
 
 it("Rejects requests with missing price", () => {
-  createDummyTicket(undefined, "").expect(400);
+  const response = createDummyTicket()
+  expect(response).not.toBeNull();
 });
 
-const createDummyTicket = (
-  title: String = "Chaiwala 2020 Hits",
-  price: String = "R300.00",
+const createDummyTicket = async (
+  title: string = "Chaiwala 2020 Hits",
+  price: Number = 300.00,
   userID?: string
 ) => {
-  const response = request(app)
+  const response = await request(app)
     .post("/api/tickets/")
     .set("Cookie", global.signInTestUser(userID))
     .send({
@@ -18,7 +19,8 @@ const createDummyTicket = (
       price: price,
     });
 
-  return response;
+  // console.log(response.body);
+  return response.body;
 };
 
 export { createDummyTicket };

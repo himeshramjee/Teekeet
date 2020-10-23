@@ -6,7 +6,6 @@ import {
   checkUserIsAuthorized,
   validateRequest,
   BadRequestError,
-  removeCurrencyFormatting
 } from "@chaiwala/common";
 
 import { Ticket } from "../models/ticket";
@@ -36,9 +35,6 @@ router.post(
   async (req: Request, res: Response) => {
     let { title, price } = req.body;
     const userID = req.currentUser!.id;
-
-    // Strip the currency formatting as we're storing the price as a Number
-    price = removeCurrencyFormatting(price);
 
     // Check if the ticket has already been created by current user
     let duplicateTicket = await Ticket.findOne({ title, price, userID });

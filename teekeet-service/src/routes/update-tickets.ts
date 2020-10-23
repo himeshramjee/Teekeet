@@ -1,6 +1,5 @@
 import express, { Request, Response } from "express";
 import { Ticket } from "../models/ticket";
-import { removeCurrencyFormatting } from "@chaiwala/common";
 import { checkUserIsAuthorized, NotAuthorizedError } from "@chaiwala/common";
 import { NotFoundError, validateRequest } from "@chaiwala/common";
 
@@ -21,8 +20,7 @@ router.put(
       .bail(),
     body("price")
       .isCurrency({
-        allow_negatives: false,
-        require_symbol: true,
+        allow_negatives: false
       })
       .withMessage((value) => {
         return `Invalid currency or value (expected format: <currency-symbol> 1,000,010.10 but got ${value}.)`;
@@ -49,7 +47,7 @@ router.put(
 
     // Update ticket
     ticketToUpdate.title = title;
-    ticketToUpdate.price = removeCurrencyFormatting(price);
+    ticketToUpdate.price = price;
     await ticketToUpdate.save();
 
     // Publish ticket updated event

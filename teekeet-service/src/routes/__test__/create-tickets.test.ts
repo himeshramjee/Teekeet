@@ -79,49 +79,39 @@ it("Returns an error for negative price value", async () => {
     .set("Cookie", global.signInTestUser())
     .send({
       title: "Happy pup",
-      price: "R-10.00",
+      price: -10.00,
     })
     .expect(400);
 });
 
-it("Returns an error for incorrect price symbol", async () => {
-  await request(app)
-    .post("/api/tickets/")
-    .set("Cookie", global.signInTestUser())
-    .send({
-      title: "Happy pup",
-      price: "$10.00",
-    })
-    .expect(400);
-});
-
+// FIXME: The second retrieval to verify saved ticket data is only working when I drop the 'await' specifier to
+//        the `Ticket.findOne(....)` function call.
 it("Creates a ticket with valid inputs", async () => {
   // Get a count of all tickets - should be zero
-  let tickets = await Ticket.find({});
+  const tickets = await Ticket.find({});
   expect(tickets.length).toEqual(0);
 
-  await createDummyTicket("Happy pup", "R1,010.10").expect(201);
+  const fakeTicket = await createDummyTicket();
+  expect(fakeTicket).not.toBeNull();
 
-  // Check the count of all tickets now - should be one
-  tickets = await Ticket.find({});
-  expect(tickets.length).toEqual(1);
+  const retrievedTicket = await Ticket.findById(fakeTicket.id);
+
+  expect(retrievedTicket).not.toBeNull();
+  expect(retrievedTicket!.title).toEqual(fakeTicket.title);
+  expect(retrievedTicket!.price).toEqual(fakeTicket.price);
 });
 
 it("Rejects creation of duplicate ticket", async () => {
-  const response = await createDummyTicket(/* Use method defaults */).expect(
-    201
-  );
-  await createDummyTicket(
-    undefined,
-    undefined,
-    response.body.userID /* Use method defaults */
-  ).expect(400);
+  const ticket1 = await createDummyTicket();
+
+  const ticket2 = await createDummyTicket(ticket1.userID);
+
+  expect(ticket2.errors).not.toBeNull();
 });
 
 it("Publishes an event when a ticket is created", async() => {
-  const response = await createDummyTicket(/* Use method defaults */).expect(
-    201
-  );
+  const ticket1 = await createDummyTicket();
+  expect(ticket1).not.toBeNull();
 
   expect(ticketCreatedPublisher.publishEvent).toHaveBeenCalled();
 });

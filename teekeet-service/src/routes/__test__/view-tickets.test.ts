@@ -15,11 +15,9 @@ it("Has a route to handle unauthenticated requests to /api/tickets/:id", async (
 });
 
 it("Returns a status 200 for a valid ticket id", async () => {
-  const title = "Happiest pup";
-  const price = "R1,010.30";
-
   // Create a fake ticket
-  const testTicket = (await createDummyTicket(title, price)).body;
+  const testTicket = await createDummyTicket();
+  expect(testTicket.errors).toBeUndefined();
 
   // Get fake ticket
   const response = await request(app)
@@ -27,8 +25,8 @@ it("Returns a status 200 for a valid ticket id", async () => {
     .expect(200);
 
   // Validate ticket info
-  expect(response.body.title).toEqual(title);
-  expect(response.body.price).toEqual(1010.3);
+  expect(response.body.title).toEqual(testTicket.title);
+  expect(response.body.price).toEqual(testTicket.price);
 });
 
 it("Returns a status 404 for an non-existent ticket id", async () => {
@@ -42,26 +40,7 @@ it("Returns a status 400 for an malformed ticket id", async () => {
 });
 
 it("Has route to handle unauthenticated requestes to /api/tickets/ and return status 200", async () => {
-  const ticketsData = [
-    { title: "Happy pup", price: "R1,010.10" },
-    { title: "Happier pupper", price: "R1,010.20" },
-    { title: "Happiest puppy", price: "R1,010.30" },
-  ];
-
-  let newTickets = new Array();
-
-  await Promise.all(
-    ticketsData.map(async (ticket) => {
-      const newT = (await createDummyTicket(ticket.title, ticket.price)).body;
-      newTickets.push(newT);
-    })
-  );
-
-  expect(newTickets.length).toBeGreaterThan(0);
-
-  const ticketListResponse = await request(app)
+  await request(app)
     .get(`/api/tickets/`)
     .expect(200);
-
-  expect(ticketListResponse.body.length).toEqual(3);
 });
