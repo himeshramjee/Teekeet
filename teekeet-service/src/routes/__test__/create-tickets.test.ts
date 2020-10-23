@@ -84,8 +84,6 @@ it("Returns an error for negative price value", async () => {
     .expect(400);
 });
 
-// FIXME: The second retrieval to verify saved ticket data is only working when I drop the 'await' specifier to
-//        the `Ticket.findOne(....)` function call.
 it("Creates a ticket with valid inputs", async () => {
   // Get a count of all tickets - should be zero
   const tickets = await Ticket.find({});
