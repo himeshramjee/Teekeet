@@ -12,7 +12,7 @@ router.get(
   "/api/orders/",
   checkUserIsAuthorized, 
   async (req: Request, res: Response) => {
-    const orders = await Order.find({ userID: req.currentUser!.id });
+    const orders = await Order.find({ userID: req.currentUser!.id }).populate("ticket");
 
     res.status(200).send(orders);
 });
@@ -35,13 +35,16 @@ router.get(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-    const order = await Order.findById(req.params.id);
+    const order = await Order.findById(req.params.id).populate("ticket");
     
     if (!order) {
       throw new NotFoundError(`Order not found (${req.params.id})`);
     }
 
     if (order.userID != req.currentUser!.id) {
+      // FIXME: This is inconsistent with the update order handlers where I throw the specific NotAuthorizedError.
+      //        For production, I'd need to think about whether throwing the specific error doesn't open up to
+      //        a security/availablity risk.
       throw new NotFoundError(`Order not found (${req.params.id})`);
     }
 

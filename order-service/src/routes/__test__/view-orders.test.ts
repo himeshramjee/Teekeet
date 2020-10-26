@@ -42,9 +42,40 @@ it("Returns 200 for authenticated users", async () => {
   await request(app)
     .get("/api/orders/")
     .set("Cookie", global.signInTestUser())
-    .then((response) => {
-      expect(response.status).toEqual(200);
-    });
+    .expect(200);
+});
+
+it("Returns ticket data with the order list", async () => {
+  const userCookies = global.signInTestUser();
+  const fakeTicket = await createFakeTicket();
+  const fakeOrder = await createFakeOrder(fakeTicket.id, fakeTicket.price, userCookies);
+
+  const response = await request(app)
+    .get("/api/orders/")
+    .set("Cookie", userCookies)
+    .expect(200);
+
+  expect(response.body[0].id).toEqual(fakeOrder.id);
+  expect(response.body[0].ticket).not.toBeNull();
+  expect(response.body[0].ticket.id).not.toBeNull();
+  expect(response.body[0].ticket.title).toEqual(fakeTicket.title);
+});
+
+
+it("Returns ticket data with a single order", async () => {
+  const userCookies = global.signInTestUser();
+  const fakeTicket = await createFakeTicket();
+  const fakeOrder = await createFakeOrder(fakeTicket.id, fakeTicket.price, userCookies);
+
+  const response = await request(app)
+    .get(`/api/orders/${fakeOrder.id}`)
+    .set("Cookie", userCookies)
+    .expect(200);
+
+  expect(response.body.id).toEqual(fakeOrder.id);
+  expect(response.body.ticket).not.toBeNull();
+  expect(response.body.ticket.id).not.toBeNull();
+  expect(response.body.ticket.title).toEqual(fakeTicket.title);
 });
 
 it("Returns 401 for attempts to read another users orders", async () => {
