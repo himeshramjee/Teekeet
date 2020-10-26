@@ -4,11 +4,13 @@ import { Order, OrderStatus } from "./order";
 interface RequiredTicketAttrs {
   title: string;
   price: number;
+  userID: string;
 }
 
 interface TicketDoc extends mongoose.Document {
   title: string;
   price: number;
+  userID: string;
 
   isReserved(): Promise<boolean>;
 }
@@ -26,6 +28,10 @@ const ticketSchema = new mongoose.Schema({
     type: Number,
     required: true,
     min: 0
+  },
+  userID: {
+    type: String,
+    required: true
   }
 }, {
   toJSON: {

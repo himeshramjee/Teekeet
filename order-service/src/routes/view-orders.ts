@@ -12,9 +12,9 @@ router.get(
   "/api/orders/",
   checkUserIsAuthorized, 
   async (req: Request, res: Response) => {
-  const orders = await Order.find({ userID: req.currentUser!.id });
+    const orders = await Order.find({ userID: req.currentUser!.id });
 
-  res.status(500).send(orders);
+    res.status(200).send(orders);
 });
 
 router.get(
@@ -45,7 +45,7 @@ router.get(
       }
     });
 
-    res.status(500).send(order);
+    res.status(200).send(order);
   }
 );
 

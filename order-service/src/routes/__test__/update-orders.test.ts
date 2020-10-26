@@ -1,7 +1,9 @@
+import mongoose from "mongoose";
 import request from "supertest";
 import { app } from "../../app";
-import { createFakeTicket } from "./test-base.test";
-import { removeCurrencyFormatting } from "@chaiwala/common";
+import { OrderDoc } from "../../models/order";
+import { TicketDoc } from "../../models/ticket";
+import { createFakeOrder, createFakeTicket } from "./test-base.test";
 
 it("Rejects update request for unauthenticated user", async () => {
   // Update fake ticket
@@ -13,9 +15,7 @@ it("Rejects put request for order owned by another user", async () => {
   const fakeTicket = await createFakeTicket();
   
   // Create dummy order
-  const order = { id: "" };
-
-  // Update order data
+  const order = await createFakeOrder(fakeTicket.id, fakeTicket.price, fakeTicket.userID);
 
   // Update order owned by another user
   await request(app)
@@ -24,43 +24,22 @@ it("Rejects put request for order owned by another user", async () => {
     .send({
     })
     .expect(401);
-
-  // Get fake order
-  const response = await request(app)
-    .get(`/api/orders/${order.id}`)
-    .expect(200);
-
-  // Validate order info
-  expect(response.body.id).toEqual(order.id);
 });
 
 it("Accepts put requests on /api/orders/", async () => {
-  // Create fake ticket
-  const fakeTicket = await createFakeTicket();
+  const orderUserID = new mongoose.Types.ObjectId().toHexString();
   
-  // Create dummy order
-  const order = { id: "", userID: "" };
-
-  // Update order data
-
-  // Update fake order
-  await request(app)
-    .put(`/api/orders/${order.id}`)
-    .set("Cookie", global.signInTestUser(order.userID))
-    .send({
-    })
-    .expect(200);
-
-  // Get fake order
   const response = await request(app)
-    .get(`/api/orders/${order.id}`)
-    .expect(200);
+    .put(`/api/orders/${orderUserID}`)
+    .set("Cookie", global.signInTestUser(orderUserID))
+    .send({
+      
+    });
 
-  // Validate order info
-  expect(response.body.id).toEqual(order.id);
+  expect(response.status).not.toEqual(400);
 });
 
-it("Rejects put request with missing ticketID", async () => {
+it("Rejects put request with missing Order ID", async () => {
   // Create fake ticket
   const fakeTicket = await createFakeTicket();
   
@@ -69,7 +48,16 @@ it("Rejects put request with missing ticketID", async () => {
     .put("/api/orders/")
     .set("Cookie", global.signInTestUser())
     .send({
-      ticketID: fakeTicket.id
     })
     .expect(404);
+});
+
+it("Rejects put request with an invalid Order ID", async () => {
+  // Update fake ticket
+  await request(app)
+    .put("/api/orders/asdf")
+    .set("Cookie", global.signInTestUser())
+    .send({
+    })
+    .expect(400);
 });

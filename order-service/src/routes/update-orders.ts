@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { Order } from "../models/order";
 import { checkUserIsAuthorized, NotAuthorizedError } from "@chaiwala/common";
 import { NotFoundError, validateRequest } from "@chaiwala/common";
+import mongoose from "mongoose";
 
 import { param } from "express-validator";
 
@@ -11,7 +12,13 @@ router.put(
   "/api/orders/:id",
   checkUserIsAuthorized,
   [
-    param("id").exists().withMessage("Order ID is required").bail()
+    param("id").exists().withMessage("Order ID is required").bail(),
+    param("id").custom((orderID) => {
+      // TODO: Couples Order service to MongoDB. Should abstract that away behind a sort of strategy for interacting with different data stores.
+      return mongoose.Types.ObjectId.isValid(orderID);
+    })
+    .withMessage((value) => { return `Invalid order id: ${value}.` })
+    .bail(),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
@@ -33,7 +40,7 @@ router.put(
     await orderToUpdate.save();
 
     // Publish ticket updated event
-    
+    // TODO: Missing impl
 
     res.status(500).send(orderToUpdate);
   }

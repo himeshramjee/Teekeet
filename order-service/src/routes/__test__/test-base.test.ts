@@ -1,7 +1,8 @@
 import request from "supertest";
 import { app } from "../../app";
 import { Ticket } from "../../models/ticket";
-import { removeCurrencyFormatting, formatCurrency } from "@chaiwala/common";
+import mongoose from "mongoose";
+import { OrderDoc } from "../../models/order";
 
 // FIXME: *cough* Good tests, good tests. *cough*
 
@@ -18,27 +19,32 @@ it("Returns a fake order", async () => {
 
 const createFakeTicket = async (
   title: string = "Chaiwala 2020 Hits",
-  price: string = "R300.00",
+  price: number = 300,
 ) => {
-  const fakeTicket = await Ticket.build({ title, price: removeCurrencyFormatting(price) });
+  const fakeTicket = await Ticket.build({ 
+    title, 
+    price: price,
+    userID: new mongoose.Types.ObjectId().toHexString() 
+  });
   fakeTicket.save();
+
   return fakeTicket;
 };
 
-const createFakeOrder = (
+const createFakeOrder = async (
   ticketID: string,
   price: number,
   userID?: string
 ) => {
-  const response = request(app)
+  const response = await request(app)
   .post("/api/orders/")
   .set("Cookie", global.signInTestUser(userID))
   .send({
     ticketID: ticketID,
-    price: formatCurrency(price)
+    price: price
   });
-
-  return response;
+  
+  return response.body;
 };
 
 export { createFakeTicket, createFakeOrder };

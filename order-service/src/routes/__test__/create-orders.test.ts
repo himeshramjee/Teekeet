@@ -3,7 +3,6 @@ import request from "supertest";
 import { app } from "../../app";
 
 import { createFakeTicket } from "./test-base.test";
-import { formatCurrency } from "@chaiwala/common";
 import { OrderStatus } from "@teekeet/common";
 import { TicketDoc } from "../../models/ticket";
 
@@ -92,7 +91,6 @@ it("Returns 400 for invalid ticket", async () => {
     });
 });
 
-
 it("Returns 201 for an authenticated user creating a new order", async () => {
   const fakeTicket: TicketDoc = await createFakeTicket();
 
@@ -108,5 +106,36 @@ it("Returns 201 for an authenticated user creating a new order", async () => {
       expect(response.body.id).not.toBeNull();
       expect(response.body.price).toEqual(fakeTicket.price);
       expect(response.body.status).toEqual(OrderStatus.Created);
+    });
+});
+
+it("Returns 400 for a reserved ticket", async () => {
+  const fakeTicket: TicketDoc = await createFakeTicket();
+
+  await request(app)
+    .post("/api/orders/")
+    .set("Cookie", global.signInTestUser())
+    .send({
+      ticketID: fakeTicket.id,
+      price: fakeTicket.price
+    })
+    .then((response) => {
+      expect(response.status).toEqual(201);
+      expect(response.body.id).not.toBeNull();
+      expect(response.body.price).toEqual(fakeTicket.price);
+      expect(response.body.status).toEqual(OrderStatus.Created);
+    });
+
+  // Try and create an order with the same ticket
+  await request(app)
+    .post("/api/orders/")
+    .set("Cookie", global.signInTestUser())
+    .send({
+      ticketID: fakeTicket.id,
+      price: fakeTicket.price
+    })
+    .then((response) => {
+      expect(response.status).toEqual(400);
+      expect(response.body.errors).not.toBeNull();
     });
 });

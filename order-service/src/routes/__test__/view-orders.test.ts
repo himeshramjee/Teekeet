@@ -36,27 +36,11 @@ it("Returns 200 for authenticated users", async () => {
     });
 });
 
-it("Returns 400 for missing ticketID", async () => {
-  await request(app)
-    .get("/api/orders/")
-    .set("Cookie", global.signInTestUser())
-    .send({
-      price: 10.0,
-    })
-    .then((response) => {
-      expect(response.status).toEqual(400);
-    });
-});
-
-it("Returns 400 for missing price", async () => {
-  const newTicketID = "5f8981732f2c6e0018c97f1d";
+it("Returns 400 for invalid ticketID", async () => {
 
   await request(app)
-    .get("/api/orders/")
+    .get(`/api/orders/asdf`)
     .set("Cookie", global.signInTestUser())
-    .send({
-      ticketID: newTicketID,
-    })
     .then((response) => {
       expect(response.status).toEqual(400);
     });
