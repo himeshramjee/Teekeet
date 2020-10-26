@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import request from "supertest";
 import { app } from "../../app";
-import { OrderDoc } from "../../models/order";
+import { OrderDoc, OrderStatus } from "../../models/order";
 import { TicketDoc } from "../../models/ticket";
 import { createFakeOrder, createFakeTicket } from "./test-base.test";
 
@@ -12,10 +12,10 @@ it("Rejects update request for unauthenticated user", async () => {
 
 it("Rejects put request for order owned by another user", async () => {
   // Create fake ticket
-  const fakeTicket = await createFakeTicket();
+  const fakeTicket: TicketDoc = await createFakeTicket();
   
   // Create dummy order
-  const order = await createFakeOrder(fakeTicket.id, fakeTicket.price, fakeTicket.userID);
+  const order: OrderDoc = await createFakeOrder(fakeTicket.id, fakeTicket.price, fakeTicket.userID);
 
   // Update order owned by another user
   await request(app)
@@ -59,5 +59,53 @@ it("Rejects put request with an invalid Order ID", async () => {
     .set("Cookie", global.signInTestUser())
     .send({
     })
+    .expect(400);
+});
+
+it("Accepts a delete request to cancel an order", async () => {
+  const fakeTicket: TicketDoc = await createFakeTicket();
+  const cookies = global.signInTestUser();
+
+  const response = await request(app)
+    .post("/api/orders/")
+    .set("Cookie", cookies)
+    .send({
+      ticketID: fakeTicket.id,
+      price: fakeTicket.price
+    });
+
+  expect(response.status).toEqual(201);
+  expect(response.body.status).toEqual(OrderStatus.Created);
+
+  await request(app)
+    .delete(`/api/orders/${response.body.id}`)
+    .set("Cookie", cookies)
+    .expect(200);
+});
+
+it("Rejects a delete request to cancel a cancelled order", async () => {
+  const fakeTicket: TicketDoc = await createFakeTicket();
+  const cookies = global.signInTestUser();
+
+  const response = await request(app)
+    .post("/api/orders/")
+    .set("Cookie", cookies)
+    .send({
+      ticketID: fakeTicket.id,
+      price: fakeTicket.price
+    });
+
+  expect(response.status).toEqual(201);
+  expect(response.body.status).toEqual(OrderStatus.Created);
+
+  await request(app)
+    .delete(`/api/orders/${response.body.id}`)
+    .set("Cookie", cookies)
+    .expect(200);
+
+  // Now try and cancel an order that's already cancelled
+  await request(app)
+    .delete(`/api/orders/${response.body.id}`)
+    .set("Cookie", cookies)
     .expect(400);
 });
