@@ -4,8 +4,6 @@ import { Ticket } from "../../models/ticket";
 import mongoose from "mongoose";
 import { OrderDoc } from "../../models/order";
 
-// FIXME: *cough* Good tests, good tests. *cough*
-
 it("Returns a fake ticket", async () => {
   const ticket = await createFakeTicket();
   expect(ticket).not.toBeNull();
@@ -26,7 +24,8 @@ const createFakeTicket = async (
     price: price,
     userID: new mongoose.Types.ObjectId().toHexString() 
   });
-  fakeTicket.save();
+
+  await fakeTicket.save();
 
   return fakeTicket;
 };
@@ -34,11 +33,13 @@ const createFakeTicket = async (
 const createFakeOrder = async (
   ticketID: string,
   price: number,
-  userID?: string
+  authCookie? : string[]
 ) => {
+  const authNCookie = authCookie == null ? global.signInTestUser() : authCookie;
+
   const response = await request(app)
   .post("/api/orders/")
-  .set("Cookie", global.signInTestUser(userID))
+  .set("Cookie", authNCookie)
   .send({
     ticketID: ticketID,
     price: price

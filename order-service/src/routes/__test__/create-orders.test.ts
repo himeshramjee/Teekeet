@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import request from "supertest";
 import { app } from "../../app";
 
@@ -77,17 +76,15 @@ it("Returns 400 for invalid price", async () => {
 });
 
 it("Returns 400 for invalid ticket", async () => {
-  const newTicketID = mongoose.Types.ObjectId();
-
   await request(app)
     .post("/api/orders/")
     .set("Cookie", global.signInTestUser())
     .send({
-      ticketID: newTicketID,
+      ticketID: "asdf",
       price: 10.00
     })
     .then((response) => {
-      expect(response.status).toEqual(404);
+      expect(response.status).toEqual(400);
     });
 });
 

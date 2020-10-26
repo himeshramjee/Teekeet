@@ -6,7 +6,6 @@ import { TicketDoc } from "../../models/ticket";
 import { createFakeOrder, createFakeTicket } from "./test-base.test";
 
 it("Rejects update request for unauthenticated user", async () => {
-  // Update fake ticket
   await request(app).put("/api/orders/1234asdf").send({}).expect(401);
 });
 
@@ -15,7 +14,7 @@ it("Rejects put request for order owned by another user", async () => {
   const fakeTicket: TicketDoc = await createFakeTicket();
   
   // Create dummy order
-  const order: OrderDoc = await createFakeOrder(fakeTicket.id, fakeTicket.price, fakeTicket.userID);
+  const order: OrderDoc = await createFakeOrder(fakeTicket.id, fakeTicket.price, global.signInTestUser());
 
   // Update order owned by another user
   await request(app)

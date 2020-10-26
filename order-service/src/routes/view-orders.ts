@@ -35,15 +35,15 @@ router.get(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-    let order;
+    const order = await Order.findById(req.params.id);
+    
+    if (!order) {
+      throw new NotFoundError(`Order not found (${req.params.id})`);
+    }
 
-    await Order.findById(req.params.id).then((doc) => {
-      if (!doc) {
-        throw new NotFoundError(`Order not found (${req.params.id})`);
-      } else {
-        order = doc;
-      }
-    });
+    if (order.userID != req.currentUser!.id) {
+      throw new NotFoundError(`Order not found (${req.params.id})`);
+    }
 
     res.status(200).send(order);
   }
