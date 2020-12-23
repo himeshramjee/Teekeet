@@ -5,6 +5,8 @@ import { NotFoundError, validateRequest } from "@chaiwala/common";
 import mongoose from "mongoose";
 
 import { param } from "express-validator";
+import { orderCancelledPublisher } from "../events/publishers/order-cancelled-publisher";
+import { orderUpdatedPublisher } from "../events/publishers/__mocks__/order-updated-publisher";
 
 const router = express.Router();
 
@@ -36,11 +38,14 @@ router.put(
       );
     }
 
-    // Update ticket
+    // Update ticket - no-op for now
     await orderToUpdate.save();
 
     // Publish ticket updated event
-    // TODO: Missing impl
+    await orderUpdatedPublisher.publishEvent({
+      id: orderToUpdate.id,
+      userID: orderToUpdate.userID
+    });
 
     res.status(200).send(orderToUpdate);
   }
@@ -84,7 +89,13 @@ router.delete(
     await orderToUpdate.save();
 
     // Publish ticket updated event
-    // TODO: Missing impl
+    await orderCancelledPublisher.publishEvent({
+      id: orderToUpdate.id,
+      userID: orderToUpdate.userID,
+      ticket: {
+        id: orderToUpdate.ticket.id
+      }
+    });
 
     res.status(200).send(orderToUpdate);
   }

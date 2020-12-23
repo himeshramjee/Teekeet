@@ -12,6 +12,10 @@ declare global {
 
 let mongo: MongoMemoryServer;
 
+jest.mock("../events/publishers/order-created-publisher");
+jest.mock("../events/publishers/order-updated-publisher");
+jest.mock("../events/publishers/order-cancelled-publisher");
+
 beforeAll(async () => {
   mongo = new MongoMemoryServer();
   const mongoUri = await mongo.getUri();

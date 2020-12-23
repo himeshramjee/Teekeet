@@ -2,7 +2,7 @@ import request from "supertest";
 import { app } from "../../app";
 import { createFakeOrder, createFakeTicket } from "./test-base.test";
 
-it("Has a route handler listening to /api/orders for post requests", async () => {
+it("Has a route handler listening to /api/orders for get requests", async () => {
   await request(app)
     .get("/api/orders/")
     .send({})
@@ -78,7 +78,7 @@ it("Returns ticket data with a single order", async () => {
   expect(response.body.ticket.title).toEqual(fakeTicket.title);
 });
 
-it("Returns 401 for attempts to read another users orders", async () => {
+it("Returns 404 for attempts to read another users orders", async () => {
   const userOneCookies = global.signInTestUser();
   const userTwoCookies = global.signInTestUser();
 
