@@ -12,16 +12,25 @@ export * from "./middlewares/error-handler";
 export * from "./middlewares/require-authN";
 export * from "./middlewares/validate-request";
 
+export * from "./events/types/nats-custom-types";
+
 export * from "./events/base-classes/base-client";
 export * from "./events/base-classes/base-listener";
 export * from "./events/base-classes/base-publisher";
+
 export * from "./events/interfaces/iEvent";
 export * from "./events/interfaces/iNat-health-deep-ping-event";
-export * from "./events/listeners/stream-health-listener";
+
 export * from "./events/interfaces/iTicketCreatedEvent";
 export * from "./events/interfaces/iTicketUpdatedEvent";
+
+export * from "./events/interfaces/iOrderCreatedEvent";
+export * from "./events/interfaces/iOrderUpdatedEvent";
+export * from "./events/interfaces/iOrderCancelledEvent";
+
+export * from "./events/listeners/stream-health-listener";
+
 export * from "./events/publishers/stream-health-publisher";
-export * from "./events/types/nats-custom-types";
 
 // Basic currency manipulation utility
 export * from "./utils/currency-utils";
